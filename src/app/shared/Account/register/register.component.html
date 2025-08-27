@@ -1,3 +1,120 @@
-<p>
-  register works!
-</p>
+<form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="space-y-6 bg-white p-8 rounded-2xl shadow-md">
+
+  <!-- First Name -->
+  <div>
+    <label for="FirstName" class="block text-sm font-medium text-gray-700">First Name</label>
+    <input id="FirstName" type="text" formControlName="FirstName"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter first name">
+    <div *ngIf="formControls['FirstName'].touched && formControls['FirstName'].invalid"
+      class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['FirstName'].errors?.['required']">First name is required</span>
+      <span *ngIf="formControls['FirstName'].errors?.['minlength']">Must be at least 2 characters</span>
+    </div>
+  </div>
+
+  <!-- Last Name -->
+  <div>
+    <label for="LastName" class="block text-sm font-medium text-gray-700">Last Name</label>
+    <input id="LastName" type="text" formControlName="LastName"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter last name">
+    <div *ngIf="formControls['LastName'].touched && formControls['LastName'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['LastName'].errors?.['required']">Last name is required</span>
+      <span *ngIf="formControls['LastName'].errors?.['minlength']">Must be at least 2 characters</span>
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div>
+    <label for="Email" class="block text-sm font-medium text-gray-700">Email</label>
+    <input id="Email" type="email" formControlName="Email"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter email address">
+    <div *ngIf="formControls['Email'].touched && formControls['Email'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['Email'].errors?.['email']">Invalid email format</span>
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div>
+    <label for="Password" class="block text-sm font-medium text-gray-700">Password</label>
+    <input id="Password" type="password" formControlName="Password"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter password">
+    <div *ngIf="formControls['Password'].touched && formControls['Password'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['Password'].errors?.['required']">Password is required</span>
+      <span *ngIf="formControls['Password'].errors?.['minlength']">At least 6 characters</span>
+    </div>
+  </div>
+
+  <!-- Gender -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Gender</label>
+    <select formControlName="Gender"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm">
+      <option value="">Select gender</option>
+      <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+    </select>
+    <div *ngIf="formControls['Gender'].touched && formControls['Gender'].invalid" class="text-red-600 text-sm mt-1">
+      <span>Gender is required</span>
+    </div>
+  </div>
+
+  <!-- Age -->
+  <div>
+    <label for="Age" class="block text-sm font-medium text-gray-700">Age</label>
+    <input id="Age" type="number" formControlName="Age"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter age">
+    <div *ngIf="formControls['Age'].touched && formControls['Age'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['Age'].errors?.['required']">Age is required</span>
+      <span *ngIf="formControls['Age'].errors?.['min']">Age must be at least 10</span>
+    </div>
+  </div>
+
+  <!-- Role -->
+  <div>
+    <label for="Role" class="block text-sm font-medium text-gray-700">Role</label>
+    <input id="Role" type="text" formControlName="Role"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter role (e.g. Teacher, Student)">
+    <div *ngIf="formControls['Role'].touched && formControls['Role'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['Role'].errors?.['required']">Role is required</span>
+    </div>
+  </div>
+
+  <!-- Hourly Rate -->
+  <div>
+    <label for="HourlyRate" class="block text-sm font-medium text-gray-700">Hourly Rate</label>
+    <input id="HourlyRate" type="number" formControlName="HourlyRate"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+      placeholder="Enter hourly rate">
+  </div>
+
+  <!-- Specializations -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Specializations</label>
+    <div class="flex flex-wrap gap-2 mt-2">
+      <label *ngFor="let s of specializations" class="flex items-center space-x-2">
+        <input type="checkbox" [value]="s" (change)="onSpecializationChange($event)"
+          [checked]="isSpecializationSelected(s)" class="h-4 w-4 text-green-600 border-gray-300 rounded">
+        <span class="text-sm text-gray-700">{{ s }}</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Upload Profile Image -->
+  <div>
+    <label for="ImageFile" class="block text-sm font-medium text-gray-700">Profile Image</label>
+    <input id="ImageFile" type="file" (change)="onFileChange($event)" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+             file:rounded-md file:border-0 file:text-sm file:font-semibold
+             file:bg-green-600 file:text-white hover:file:bg-green-700">
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" [disabled]="userRegisterForm.invalid"
+    class="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 focus:outline-none">
+    Register
+  </button>
+</form>
