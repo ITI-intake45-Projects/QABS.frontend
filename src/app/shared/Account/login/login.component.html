@@ -1,3 +1,98 @@
-<p>
-  login works!
-</p>
+<div class="flex items-center justify-center min-h-screen bg-[var(--gray-light)]">
+  <div class="w-full max-w-md bg-[var(--background-primary)] shadow-lg rounded-2xl p-8 relative">
+
+    <!-- Toast message -->
+    <div *ngIf="showMessage"
+         [ngClass]="{
+           'bg-green-500': messageType==='success',
+           'bg-red-500': messageType==='error'
+         }"
+         class="text-white z-10 px-4 py-2 rounded-md absolute top-50 left-1/2 transform -translate-x-1/2 shadow-lg">
+      {{ message }}
+    </div>
+
+    <!-- Logo -->
+    <div class="flex justify-center mb-6"></div>
+
+    <!-- Welcome text -->
+    <h1 class="text-2xl font-bold text-[var(--text-primary)] text-center">مرحباً بعودتك</h1>
+    <p class="text-[var(--text-secondary)] text-center mt-2">
+      مستخدم جديد؟
+      <a routerLink="/register" class="text-[var(--gold-primary)] hover:text-[var(--gold-secondary)] font-medium">
+        أنشئ حساباً
+      </a>
+    </p>
+
+    <!-- Login form -->
+    <form class="mt-6 space-y-5" [formGroup]="loginForm" (ngSubmit)="Send()">
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-[var(--text-primary)] mb-1">البريد الإلكتروني</label>
+        <input type="email" id="email" formControlName="identifier"
+               class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
+                      focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+                      text-[var(--text-primary)] placeholder-[var(--gray-dark)]">
+        <div *ngIf="loginForm.get('identifier')?.touched && loginForm.get('identifier')?.invalid"
+             class="text-red-500 text-sm mt-1">
+          <span *ngIf="loginForm.get('identifier')?.errors?.['required']">الإيميل مطلوب</span>
+          <span *ngIf="loginForm.get('identifier')?.errors?.['email']">صيغة الإيميل غير صحيحة</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-[var(--text-primary)] mb-1">كلمة المرور</label>
+        <div class="relative">
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+                 class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
+                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]">
+          <button type="button"
+                  class="absolute inset-y-0 right-3 flex items-center text-[var(--gray-dark)] hover:text-[var(--green-dark)]"
+                  (click)="togglePasswordVisibility()">
+            <i class="far" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+          </button>
+        </div>
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+             class="text-red-500 text-sm mt-1">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">كلمة المرور مطلوبة</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">كلمة المرور يجب أن تكون 6 أحرف على الأقل</span>
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="flex items-center justify-between text-sm">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" id="remember" class="h-4 w-4 text-[var(--green-primary)] border-[var(--gray-medium)] rounded">
+          <span class="text-[var(--text-secondary)]">تذكرني؟</span>
+        </label>
+        <a href="#" class="text-[var(--gold-primary)] hover:text-[var(--gold-secondary)]">نسيت كلمة المرور؟</a>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="isLoading"
+              class="w-full cursor-pointer bg-[var(--green-primary)] hover:bg-[var(--green-dark)] disabled:bg-gray-400 disabled:cursor-not-allowed
+                     text-white font-semibold py-2 px-4 rounded-lg shadow-md flex items-center justify-center gap-2
+                     focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[var(--gold-primary)] transition">
+        <ng-container *ngIf="!isLoading">تسجيل الدخول</ng-container>
+        <ng-container *ngIf="isLoading">
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+          <span>جاري التحميل...</span>
+        </ng-container>
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="mt-6 text-center text-[var(--gray-dark)] text-sm">
+      <p>
+        جميع الحقوق محفوظة © 2025
+        <span class="font-semibold">أكاديمية </span>
+        <span class="text-[var(--gold-primary)] font-semibold">قبس</span>
+      </p>
+    </div>
+  </div>
+</div>

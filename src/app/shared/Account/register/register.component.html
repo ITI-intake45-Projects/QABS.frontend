@@ -1,6 +1,6 @@
-<form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="space-y-6 bg-white p-8 rounded-2xl shadow-md">
+<!-- <form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="space-y-6 bg-white p-8 rounded-2xl shadow-md">
 
-  <!-- First Name -->
+  <!--  First Name --
   <div>
     <label for="FirstName" class="block text-sm font-medium text-gray-700">First Name</label>
     <input id="FirstName" type="text" formControlName="FirstName"
@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <!-- Last Name -->
+  <!-- Last Name --
   <div>
     <label for="LastName" class="block text-sm font-medium text-gray-700">Last Name</label>
     <input id="LastName" type="text" formControlName="LastName"
@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <!-- Email -->
+  <!-- Email --
   <div>
     <label for="Email" class="block text-sm font-medium text-gray-700">Email</label>
     <input id="Email" type="email" formControlName="Email"
@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  <!-- Password -->
+  <!-- Password --
   <div>
     <label for="Password" class="block text-sm font-medium text-gray-700">Password</label>
     <input id="Password" type="password" formControlName="Password"
@@ -48,7 +48,7 @@
     </div>
   </div>
 
-  <!-- Gender -->
+  <!-- Gender --
   <div>
     <label class="block text-sm font-medium text-gray-700">Gender</label>
     <select formControlName="Gender"
@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <!-- Age -->
+  <!-- Age --
   <div>
     <label for="Age" class="block text-sm font-medium text-gray-700">Age</label>
     <input id="Age" type="number" formControlName="Age"
@@ -73,18 +73,20 @@
     </div>
   </div>
 
-  <!-- Role -->
+  <!-- Role --
   <div>
-    <label for="Role" class="block text-sm font-medium text-gray-700">Role</label>
-    <input id="Role" type="text" formControlName="Role"
-      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
-      placeholder="Enter role (e.g. Teacher, Student)">
+    <label class="block text-sm font-medium text-gray-700">Role</label>
+    <select formControlName="Role"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm">
+      <option value="">Select role</option>
+      <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+    </select>
     <div *ngIf="formControls['Role'].touched && formControls['Role'].invalid" class="text-red-600 text-sm mt-1">
-      <span *ngIf="formControls['Role'].errors?.['required']">Role is required</span>
+      <span>Role is required</span>
     </div>
   </div>
 
-  <!-- Hourly Rate -->
+  <!-- Hourly Rate --
   <div>
     <label for="HourlyRate" class="block text-sm font-medium text-gray-700">Hourly Rate</label>
     <input id="HourlyRate" type="number" formControlName="HourlyRate"
@@ -92,7 +94,7 @@
       placeholder="Enter hourly rate">
   </div>
 
-  <!-- Specializations -->
+  <!-- Specializations --
   <div>
     <label class="block text-sm font-medium text-gray-700">Specializations</label>
     <div class="flex flex-wrap gap-2 mt-2">
@@ -104,7 +106,7 @@
     </div>
   </div>
 
-  <!-- Upload Profile Image -->
+  <!-- Upload Profile Image --
   <div>
     <label for="ImageFile" class="block text-sm font-medium text-gray-700">Profile Image</label>
     <input id="ImageFile" type="file" (change)="onFileChange($event)" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
@@ -112,9 +114,197 @@
              file:bg-green-600 file:text-white hover:file:bg-green-700">
   </div>
 
-  <!-- Submit Button -->
+  <!-- Submit Button --
   <button type="submit" [disabled]="userRegisterForm.invalid"
     class="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 focus:outline-none">
     Register
   </button>
+</form> -->
+
+
+
+
+<form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="max-w-lg mx-auto space-y-10 bg-white p-8  ">
+  <!-- First Name -->
+  <div class="grid md:grid-cols-2 md:gap-4">
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="floating_first_name" id="first_name" formControlName="FirstName"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" " required />
+      <label for="floating_first_name"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">الاسم
+        الأول</label>
+      <div *ngIf="formControls['FirstName'].touched && formControls['FirstName'].invalid"
+        class="text-red-600 text-sm mt-1">
+        <span *ngIf="formControls['FirstName'].errors?.['required']">الاسم الأول مطلوب</span>
+        <span *ngIf="formControls['FirstName'].errors?.['minlength']">الاسم الأول يجب أن يكون على الأقل 2 أحرف</span>
+      </div>
+
+    </div>
+
+
+
+    <!-- Last Name -->
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="floating_last_name" id="last_name" formControlName="LastName"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" " required />
+      <label for="floating_last_name"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">الاسم
+        الأخير</label>
+      <div *ngIf="formControls['LastName'].touched && formControls['LastName'].invalid"
+        class="text-red-600 text-sm mt-1">
+        <span *ngIf="formControls['LastName'].errors?.['required']">الاسم الأخير مطلوب</span>
+        <span *ngIf="formControls['LastName'].errors?.['minlength']">الاسم الأخير يجب أن يكون على الأقل 2 أحرف</span>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="relative z-0 w-full mb-5 group">
+    <input type="email" name="floating_email" id="Email" formControlName="Email"
+      class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " required />
+    <label for="floating_email"
+      class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">البريد
+      الإلكتروني</label>
+    <div *ngIf="formControls['Email'].touched && formControls['Email'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['Email'].errors?.['required']">البريد الإلكتروني مطلوب</span>
+      <span *ngIf="formControls['Email'].errors?.['email']">أدخل بريدًا إلكترونيًا صالحًا</span>
+    </div>
+
+  </div>
+
+  <!-- password -->
+  <div class="relative z-0 w-full mb-5 group">
+    <input type="password" name="floating_password" id="password" formControlName="Password"
+      class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " required />
+    <label for="floating_password"
+      class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">كلمة
+      المرور</label>
+    <div *ngIf="formControls['Password'].touched && formControls['Password'].invalid" class="text-red-600 text-sm mt-1">
+      <span *ngIf="formControls['Password'].errors?.['required']">كلمة المرور مطلوبة</span>
+      <span *ngIf="formControls['Password'].errors?.['minlength']">يجب أن تكون كلمة المرور 6 أحرف على الأقل</span>
+    </div>
+
+  </div>
+
+  <div class="grid md:grid-cols-3 md:gap-6">
+
+    <!-- Gender -->
+    <div class="relative z-20 w-full mb-5 group">
+      <!-- Floating Label Dropdown -->
+      <div class="relative">
+        <input type="text" readonly [value]="selectedGenderLabel" (click)="toggleDropdown()" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0
+                  border-b-2 border-gray-300 appearance-none focus:outline-none
+                  focus:ring-0 focus:border-blue-600 peer cursor-pointer" placeholder=" " />
+
+        <!-- Floating Label -->
+        <label for="gender" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3
+                  -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
+                  peer-placeholder-shown:text-gray-400 peer-focus:scale-75 peer-focus:-translate-y-6
+                  peer-focus:text-blue-600">
+          النوع
+        </label>
+
+        <!-- Dropdown -->
+        <div *ngIf="dropdownOpen"
+          class="absolute z-10 mt-1 bg-white divide-y divide-gray-100 rounded-lg w-full shadow-md">
+          <label *ngFor="let g of genders" class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+            <input type="radio" name="gender" [value]="g.id" [checked]="formControls['Gender'].value === g.id"
+              (change)="selectGender(g.id)" class="h-4 w-4 text-blue-600 mr-2">
+            <span>{{ g.label }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Age -->
+    <div class="relative z-0 w-full mb-5 group">
+      <input type="number" name="floating_age" id="floating_age" formControlName="Age"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" " required />
+      <label for="floating_age"
+        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">العمر</label>
+      <div *ngIf="formControls['Age'].touched && formControls['Age'].invalid" class="text-red-600 text-sm mt-1">
+        <span *ngIf="formControls['Age'].errors?.['required']">العمر مطلوب</span>
+        <span *ngIf="formControls['Age'].errors?.['min']">يجب أن يكون العمر 1 على الأقل</span>
+      </div>
+
+    </div>
+
+    <div class="relative z-0 w-full mb-5 group">
+      <!-- Hourly Rate  -->
+      <div class="relative">
+        <input type="number" formControlName="HourlyRate" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0
+             border-b-2 border-gray-300 appearance-none focus:outline-none
+             focus:ring-0 focus:border-blue-600 peer cursor-pointer" placeholder=" " />
+
+        <!-- Label -->
+        <label class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform
+             -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0
+             peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
+             peer-focus:scale-75 peer-focus:-translate-y-6">
+          تكلفة الساعة
+        </label>
+
+
+        <!-- Validation -->
+        <div *ngIf="formControls['HourlyRate']?.touched && formControls['HourlyRate']?.invalid"
+          class="text-red-600 text-sm mt-1">
+          <!-- <span *ngIf="formControls['HourlyRate']?.errors?.['required']">تكلفة الساعة مطلوبة</span> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- specializations -->
+
+  <!-- Input-like box to show selected items -->
+  <div class="relative">
+    <div class=" border-b-2 border-gray-300 px-3 py-2 rounded cursor-pointer" (click)="toggleDropdownSpecialization()">
+      <span *ngIf="selectedSpecializations.length === 0" class="text-gray-400">
+        اختر التخصص
+      </span>
+      <span *ngIf="selectedSpecializations.length > 0">
+        {{ selectedSpecializationsLabels }}
+      </span>
+    </div>
+
+
+    <!-- Dropdown with checkboxes -->
+    <div *ngIf="dropdownSpecializationOpen"
+      class="absolute z-10 mt-1 bg-white divide-y divide-gray-100 rounded-lg shadow-sm ">
+      <label *ngFor="let s of specializations" class="flex items-center px-5 py-3 cursor-pointer hover:bg-gray-100">
+        <input type="checkbox" [value]="s.id" (change)="onSpecializationChange($event)"
+          [checked]="isSpecializationSelected(s.id)" class="h-4 w-4 text-green-600  border-gray-300 rounded ml-3">
+        <span>{{ s.label }}</span>
+      </label>
+    </div>
+  </div>
+
+
+
+
+  <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
+  <input
+    formControlName="ImageFile"
+    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+    aria-describedby="file_input_help" id="file_input" type="file">
+  <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).
+  </p>
+
+
+
+  <div class="flex justify-end">
+    <button type="submit"
+      class="py-2 px-4 cursor-pointer bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 focus:outline-none">
+      تسجيل
+    </button>
+  </div>
+
 </form>

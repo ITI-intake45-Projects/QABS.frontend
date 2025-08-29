@@ -1,4 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+export interface SidebarItem {
+  label: string;
+  icon?: string;
+  route?: string;
+  children?: SidebarItem[];
+  open?: boolean;
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -6,11 +15,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.css'],
   standalone: false
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  @Input() items: SidebarItem[] = [];
 
-  constructor() { }
+  collapsed = false;
+  constructor(private sanitizer: DomSanitizer) {}
 
-  ngOnInit() {
+  toggleSidebar() {
+    this.collapsed = !this.collapsed;
   }
 
+  toggleItem(item: any) {
+    if (item.children) {
+      item.open = !item.open;
+    }
+  }
+
+  getIcon(icon: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(icon);
+  }
 }

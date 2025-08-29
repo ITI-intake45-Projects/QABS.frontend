@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^20.2.1",
     "@angular/common": "^20.2.1",
     "@angular/compiler": "^20.2.1",
     "@angular/core": "^20.2.1",
@@ -21,7 +22,9 @@
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "flowbite": "^3.1.2",
     "ngx-cookie-service": "^20.1.0",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
