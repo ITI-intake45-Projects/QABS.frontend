@@ -9,11 +9,10 @@ export interface UserRegister {
   Gender : Gender;
   Age : number;
   // ProfileImg? : string;
-  ImageFile? : File;
+  // DateCreated? : Date;
+  // ImageFile? : File;
   Role : string;
   HourlyRate? : number;
   Specializations? : SpecializationType[];
-
-
 }
 

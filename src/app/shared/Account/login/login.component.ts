@@ -30,8 +30,8 @@ export class LoginComponent {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      identifier: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      UserNameOrEmail: ['', [Validators.required, Validators.email]],
+      Password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
@@ -51,6 +51,15 @@ export class LoginComponent {
 
     this.accountService.Login(this.loginForm.value).subscribe({
       next: (res) => {
+        if(res == null){
+          console.error('❌ Login failed:');
+          this.isLoading = false;
+    
+          // رسالة خطأ واضحة للمستخدم
+          this.showToast('الإيميل أو كلمة المرور خاطئة، حاول مرة أخرى',
+              'error'
+            );
+        }
         console.log('✅ Login successful:', res);
         this.isLoading = false;
         this.router.navigate(['/dashboard']);

@@ -29,22 +29,22 @@
       <!-- Email -->
       <div>
         <label for="email" class="block text-sm font-medium text-[var(--text-primary)] mb-1">البريد الإلكتروني</label>
-        <input type="email" id="email" formControlName="identifier"
+        <input type="email" id="email" formControlName="UserNameOrEmail"
                class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
                       focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
                       text-[var(--text-primary)] placeholder-[var(--gray-dark)]">
-        <div *ngIf="loginForm.get('identifier')?.touched && loginForm.get('identifier')?.invalid"
+        <div *ngIf="loginForm.get('UserNameOrEmail')?.touched && loginForm.get('UserNameOrEmail')?.invalid"
              class="text-red-500 text-sm mt-1">
-          <span *ngIf="loginForm.get('identifier')?.errors?.['required']">الإيميل مطلوب</span>
-          <span *ngIf="loginForm.get('identifier')?.errors?.['email']">صيغة الإيميل غير صحيحة</span>
+          <span *ngIf="loginForm.get('UserNameOrEmail')?.errors?.['required']">الإيميل مطلوب</span>
+          <span *ngIf="loginForm.get('UserNameOrEmail')?.errors?.['email']">صيغة الإيميل غير صحيحة</span>
         </div>
       </div>
 
       <!-- Password -->
       <div>
-        <label for="password" class="block text-sm font-medium text-[var(--text-primary)] mb-1">كلمة المرور</label>
+        <label for="Password" class="block text-sm font-medium text-[var(--text-primary)] mb-1">كلمة المرور</label>
         <div class="relative">
-          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+          <input [type]="showPassword ? 'text' : 'Password'" id="Password" formControlName="Password"
                  class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
                         focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
                         text-[var(--text-primary)] placeholder-[var(--gray-dark)]">
@@ -54,10 +54,10 @@
             <i class="far" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
           </button>
         </div>
-        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+        <div *ngIf="loginForm.get('Password')?.touched && loginForm.get('Password')?.invalid"
              class="text-red-500 text-sm mt-1">
-          <span *ngIf="loginForm.get('password')?.errors?.['required']">كلمة المرور مطلوبة</span>
-          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">كلمة المرور يجب أن تكون 6 أحرف على الأقل</span>
+          <span *ngIf="loginForm.get('Password')?.errors?.['required']">كلمة المرور مطلوبة</span>
+          <span *ngIf="loginForm.get('Password')?.errors?.['minlength']">كلمة المرور يجب أن تكون 6 أحرف على الأقل</span>
         </div>
       </div>
 
