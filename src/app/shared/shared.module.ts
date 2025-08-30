@@ -17,7 +17,11 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+     BrowserAnimationsModule, // لازم قبل Toastr
+    ToastrModule.forRoot({
+      
+    }),
 
 
 

@@ -1,74 +1,76 @@
-<!-- <div class="h-screen bg-gray-800 text-white flex flex-col transition-all duration-300"
-  [ngClass]="collapsed ? 'w-16' : 'w-64'">
+<div
+  class="relative h-screen bg-[var(--green-darker)] text-[var(--gray-light)] rounded-2xl m-1 flex flex-col transition-all duration-300 p-2"
+  [ngClass]="collapsed ? 'w-20' : 'w-70'">
 
-  <!-- Header --
-  <div class="flex items-center justify-between p-4">
-    <h2 *ngIf="!collapsed" class="text-lg font-bold">Menu</h2>
-    <button (click)="toggleSidebar()" class="p-2">
-      <span *ngIf="collapsed">➡️</span>
-      <span *ngIf="!collapsed">⬅️</span>
-    </button>
-  </div>
-
-  <!-- Items --
-  <ul class="flex-1">
-    <li *ngFor="let item of items" class="p-2 hover:bg-gray-700 cursor-pointer">
-      <a [routerLink]="item.route" class="flex items-center gap-2">
-        <span *ngIf="item.icon" [innerHTML]="getIcon(item.icon)"></span>
-        <span *ngIf="!collapsed">{{ item.label }}</span>
-      </a>
-
-      <!-- Children (Sub-menu) --
-      <ul *ngIf="item.children && !collapsed" class="ml-6 mt-1">
-        <li *ngFor="let child of item.children" class="p-1 hover:bg-gray-600">
-          <a [routerLink]="child.route">{{ child.label }}</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div> -->
-
-
-<div class="h-screen bg-[var(--green-primary)] text-[var(--gray-light)] flex flex-col transition-all duration-300"
-     [ngClass]="collapsed ? 'w-16' : 'w-64'">
 
   <!-- Header -->
+  <button (click)="toggleSidebar()" class="absolute top-1/2 -left-6 transform -translate-y-1/2
+       flex items-center justify-center w-15 h-15 rounded-full
+       bg-[var(--gold-primary)] text-white shadow-lg
+       hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+    <!-- Arrow when collapsed -->
+    <svg *ngIf="!collapsed" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-300"
+      fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+
+
+    <!-- Arrow when expanded -->
+    <svg *ngIf="collapsed" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-300"
+      fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
   <div class="flex items-center justify-between p-4 border-b border-[var(--green-dark)]">
     <h2 *ngIf="!collapsed" class="text-lg font-bold text-[var(--gold-primary)]">Menu</h2>
-    <button (click)="toggleSidebar()" class="p-2 hover:bg-[var(--green-dark)] rounded-lg">
-      <span *ngIf="collapsed">➡️</span>
-      <span *ngIf="!collapsed">⬅️</span>
-    </button>
+    <!-- Sidebar Toggle Button -->
+    <!-- Sidebar Toggle Button (Arrow on middle edge) -->
+
+
+
   </div>
 
   <!-- Items -->
-  <ul class="flex-1">
-    <li *ngFor="let item of items" class="p-2 hover:bg-[var(--green-secondary)] cursor-pointer rounded-md">
+  <ul class="flex-1 mt-6 space-y-5 ">
+    <li *ngFor="let item of items" class="  cursor-pointer ">
 
       <!-- Parent Link -->
-      <div (click)="toggleItem(item)" class="flex items-center justify-between">
-        <a [routerLink]="item.route || null"
-           class="flex items-center gap-2 flex-1">
+      <div (click)="toggleItem(item)"
+        class="flex items-center  justify-between hover:bg-[var(--gold-primary)]  rounded-md  ">
+        <a [routerLink]="item.route || null" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center gap-5 flex-1 rounded-md transition-all duration-300 p-2"
+          [ngClass]="{ 'justify-center': collapsed, 'justify-start': !collapsed }">
+
           <span *ngIf="item.icon" [innerHTML]="getIcon(item.icon)"></span>
-          <span *ngIf="!collapsed">{{ item.label }}</span>
+
+          <span *ngIf="!collapsed" class="transition-opacity duration-500 text-xl"
+            [ngClass]="{ 'opacity-0': collapsed, 'opacity-100': !collapsed }">
+            {{ item.label }}
+          </span>
         </a>
+
+
 
         <!-- Caret if has children -->
         <span *ngIf="item.children && !collapsed" class="ml-2">
-          <span *ngIf="!item.open">  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                  </svg>
-                </span>
-          <span *ngIf="item.open">  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                  </svg>
-                </span>
+          <span *ngIf="!item.open"> <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 4 4 4-4" />
+            </svg>
+          </span>
+          <span *ngIf="item.open"> <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 4 4 4-4" />
+            </svg>
+          </span>
         </span>
       </div>
 
       <!-- Children (Dropdown) -->
-      <ul *ngIf="item.children && item.open && !collapsed" class="ml-6 mt-1 border-l border-[var(--green-dark)]">
-        <li *ngFor="let child of item.children" class="p-2 hover:bg-[var(--green-dark)] rounded-md">
+      <ul *ngIf="item.children && item.open && !collapsed" class="ml-6 mt-1 pr-8 text-lg">
+        <li *ngFor="let child of item.children" class="p-2 hover:bg-[var(--gold-primary)] rounded-md">
           <a [routerLink]="child.route" class="flex items-center gap-2">
             <span class="text-[var(--gold-secondary)]">•</span>
             {{ child.label }}
@@ -77,4 +79,220 @@
       </ul>
     </li>
   </ul>
+
+
+
+  <!-- Footer -->
+  <div
+    class="relative cursor-pointer p-4 border-t border-[var(--green-dark)]/30 bg-gradient-to-r from-[var(--green-secondary)] to-[var(--green-primary)]"
+    (click)="toggleUserMenu()">
+
+    <!-- Expanded (not collapsed) -->
+    <div *ngIf="!collapsed" class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-[var(--gold-primary)] rounded-full flex items-center justify-center">
+        <svg class="w-4 h-4 text-[var(--green-darker)]" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-sm font-medium text-[var(--gold-primary)]">User Name</span>
+        <span class="text-xs text-[var(--gray-medium)]">Online</span>
+      </div>
+    </div>
+
+    <!-- Collapsed -->
+    <div *ngIf="collapsed" class="flex justify-center">
+      <div class="w-8 h-8 bg-[var(--gold-primary)] rounded-full flex items-center justify-center">
+        <svg class="w-4 h-4 text-[var(--green-darker)]" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <div *ngIf="userMenuOpen"
+      class="absolute bottom-16 left-0 w-full bg-[var(--green-darker)] text-[var(--gray-light)] rounded-md shadow-lg overflow-hidden animate-fadeIn">
+      <ul class="flex flex-col ">
+
+        <!-- Profile -->
+        <li>
+          <a routerLink="/profile"
+            class="flex items-center gap-2 px-4 py-2 hover:bg-[var(--gold-primary)] cursor-pointer rounded-md"
+            [ngClass]="{ 'justify-center': collapsed, 'justify-start': !collapsed }">
+            <i class="fas fa-user"></i>
+            <span *ngIf="!collapsed">Profile</span>
+          </a>
+        </li>
+
+        <!-- Settings -->
+        <li>
+          <a routerLink="/settings"
+            class="flex items-center gap-2 px-4 py-2 hover:bg-[var(--gold-primary)] cursor-pointer rounded-md"
+            [ngClass]="{ 'justify-center': collapsed, 'justify-start': !collapsed }">
+            <i class="fas fa-cog"></i>
+            <span *ngIf="!collapsed">Settings</span>
+          </a>
+        </li>
+
+        <!-- Log Out -->
+        <li>
+          <a routerLink="/login"
+            class="flex items-center gap-2 px-4 py-2 hover:bg-red-500 cursor-pointer rounded-md text-red-700 hover:text-white"
+            [ngClass]="{ 'justify-center': collapsed, 'justify-start': !collapsed }">
+            <i class="fas fa-sign-out-alt"></i>
+            <span *ngIf="!collapsed">Log Out</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
 </div>
+
+
+
+<!--
+
+<!-- Beautiful Sidebar Component --
+<div class="h-screen bg-[var(--green-primary)] text-[var(--gray-light)] flex flex-col transition-all duration-300 ease-in-out shadow-xl relative"
+     [ngClass]="collapsed ? 'w-16' : 'w-64'">
+
+  <!-- Header --
+  <div class="flex items-center justify-between p-4 border-b border-[var(--green-dark)]/30 bg-gradient-to-r from-[var(--green-secondary)] to-[var(--green-primary)]">
+    <div class="flex items-center gap-3">
+      <!-- Logo/Icon --
+      <div class="w-8 h-8 bg-[var(--gold-primary)] rounded-lg flex items-center justify-center shadow-md">
+        <svg class="w-5 h-5 text-[var(--green-darker)]" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+        </svg>
+      </div>
+      <h2 *ngIf="!collapsed" class="text-lg font-bold text-[var(--gold-primary)] tracking-wide">
+        Academy
+      </h2>
+    </div>
+
+    <!-- Toggle Button --
+    <button (click)="toggleSidebar()"
+            class="p-2 hover:bg-[var(--green-dark)]/50 rounded-lg transition-all duration-200 hover:shadow-md group">
+      <svg *ngIf="collapsed" class="w-5 h-5 text-[var(--gold-primary)] group-hover:scale-110 transition-transform"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+      <svg *ngIf="!collapsed" class="w-5 h-5 text-[var(--gold-primary)] group-hover:scale-110 transition-transform"
+           fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Navigation Items --
+  <nav class="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-[var(--green-primary)] scrollbar-thumb-[var(--green-dark)]">
+    <ul class="p-2 space-y-1">
+      <li *ngFor="let item of items; let i = index"
+          class="group"
+          [class.active]="item.open">
+
+        <!-- Parent Item --
+        <div class="relative">
+          <div (click)="toggleItem(item)"
+               class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-200
+                      hover:bg-[var(--green-secondary)]/70 hover:shadow-md hover:translate-x-1
+                      group-[.active]:bg-[var(--green-secondary)] group-[.active]:shadow-lg">
+
+            <div class="flex items-center gap-3 flex-1">
+              <!-- Icon Container --
+              <div class="w-10 h-10 rounded-lg bg-[var(--green-dark)]/30 flex items-center justify-center
+                          group-hover:bg-[var(--gold-primary)]/20 transition-all duration-200
+                          group-[.active]:bg-[var(--gold-primary)]/30">
+                <span *ngIf="item.icon" [innerHTML]="getIcon(item.icon)"
+                      class="text-[var(--gold-primary)] w-5 h-5"></span>
+              </div>
+
+              <!-- Label --
+              <div *ngIf="!collapsed" class="flex flex-col">
+                <span class="font-medium text-[var(--gray-light)] group-hover:text-white transition-colors">
+                  {{ item.label }}
+                </span>
+                <span *ngIf="item.children"
+                      class="text-xs text-[var(--gray-medium)] group-hover:text-[var(--gray-light)] transition-colors">
+                  {{ item.children }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Dropdown Arrow --
+            <div *ngIf="item.children && !collapsed"
+                 class="ml-2 transition-transform duration-200"
+                 [class.rotate-180]="item.open">
+              <svg class="w-4 h-4 text-[var(--gold-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Active Indicator --
+          <div *ngIf="item.open && !collapsed"
+               class="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-[var(--gold-primary)] rounded-l-full shadow-md">
+          </div>
+        </div>
+
+        <!-- Children/Submenu --
+        <div *ngIf="item.children && item.open && !collapsed"
+             class="mt-2 ml-4 pl-4 border-l-2 border-[var(--green-dark)]/40 space-y-1">
+          <div *ngFor="let child of item.children"
+               class="group/child">
+            <a [routerLink]="child.route"
+               class="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all duration-200
+                      hover:bg-[var(--green-dark)]/30 hover:translate-x-1 hover:shadow-sm">
+
+              <!-- Child Icon --
+              <div class="w-2 h-2 rounded-full bg-[var(--gold-secondary)]/60
+                          group-hover/child:bg-[var(--gold-primary)] transition-colors">
+              </div>
+
+              <!-- Child Label --
+              <span class="text-sm text-[var(--gray-light)]/80 group-hover/child:text-[var(--gray-light)]
+                           group-hover/child:font-medium transition-all">
+                {{ child.label }}
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tooltip for collapsed state --
+        <div *ngIf="collapsed"
+             class="absolute left-full ml-2 top-0 bg-[var(--green-darker)] text-[var(--gray-light)]
+                    px-3 py-2 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100
+                    group-hover:visible transition-all duration-200 whitespace-nowrap z-50
+                    before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2
+                    before:-translate-x-1 before:border-4 before:border-transparent
+                    before:border-r-[var(--green-darker)]">
+          {{ item.label }}
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Footer --
+  <div class="p-4 border-t border-[var(--green-dark)]/30 bg-gradient-to-r from-[var(--green-secondary)] to-[var(--green-primary)]">
+    <div *ngIf="!collapsed" class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-[var(--gold-primary)] rounded-full flex items-center justify-center">
+        <svg class="w-4 h-4 text-[var(--green-darker)]" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-sm font-medium text-[var(--gold-primary)]">User Name</span>
+        <span class="text-xs text-[var(--gray-medium)]">Online</span>
+      </div>
+    </div>
+
+    <div *ngIf="collapsed" class="flex justify-center">
+      <div class="w-8 h-8 bg-[var(--gold-primary)] rounded-full flex items-center justify-center">
+        <svg class="w-4 h-4 text-[var(--green-darker)]" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div> -->

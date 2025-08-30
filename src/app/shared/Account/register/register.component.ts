@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
   userRegisterForm: FormGroup;
   dropdownOpen = false;
   dropdownSpecializationOpen = false;
+  isLoading = false;
 
   Gender = Gender;
   genders = [
@@ -117,6 +118,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isLoading = true;
     if (this.userRegisterForm.valid) {
       const formData = new FormData();
 

@@ -1,0 +1,5 @@
+.active-link {
+  background-color: var(--gold-primary) !important;
+  color: var(--green-secondary) !important;
+  font-weight: bold;
+}

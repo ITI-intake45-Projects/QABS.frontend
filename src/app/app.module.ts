@@ -22,12 +22,8 @@ import { ToastrModule } from 'ngx-toastr';
     // FontAwesomeModule,
     FormsModule,        // ✅ هنا
     HttpClientModule,
-    BrowserAnimationsModule, // لازم قبل Toastr
-    ToastrModule.forRoot({
-      positionClass: 'toast-top-right',
-      timeOut: 3000,
-      progressBar: true,
-    }),
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(),
   ],
   declarations: [
     AppComponent

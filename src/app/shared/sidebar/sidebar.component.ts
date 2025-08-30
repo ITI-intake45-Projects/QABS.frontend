@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export interface SidebarItem {
@@ -19,10 +19,12 @@ export class SidebarComponent {
   @Input() items: SidebarItem[] = [];
 
   collapsed = false;
-  constructor(private sanitizer: DomSanitizer) {}
+  // isMobile = false;
+  constructor(private sanitizer: DomSanitizer) { }
 
   toggleSidebar() {
     this.collapsed = !this.collapsed;
+    this.userMenuOpen = false;
   }
 
   toggleItem(item: any) {
@@ -34,4 +36,21 @@ export class SidebarComponent {
   getIcon(icon: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(icon);
   }
+
+  // @HostListener('window:resize')
+  // checkScreenSize() {
+  //   this.isMobile = window.innerWidth < 768; // Mobile breakpoint
+  //   if (this.isMobile) {
+  //     this.collapsed = true; // Sidebar collapsed by default on mobile
+  //   } else {
+  //     this.collapsed = false; // Expanded by default on desktop
+  //   }
+  // }
+
+  userMenuOpen = false;
+
+toggleUserMenu() {
+  this.userMenuOpen = !this.userMenuOpen;
+}
+
 }
