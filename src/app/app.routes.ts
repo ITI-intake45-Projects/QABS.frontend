@@ -10,8 +10,8 @@ export const routes: Routes = [
 
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'sidebar', component: SidebarComponent },
-  { path: '', loadChildren: () => import('./dashboard/dashboardpages.module').then(m => m.DashboardpagesModule) },
+  // { path: 'sidebar', component: SidebarComponent },
+  { path: '', loadChildren: () => import('./dashboard/dashboard-routes.module').then(m => m.DashboardRoutesModule) },
 
 
 

@@ -1,5 +1,6 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 export interface SidebarItem {
   label: string;
@@ -17,10 +18,9 @@ export interface SidebarItem {
 })
 export class SidebarComponent {
   @Input() items: SidebarItem[] = [];
+  @Input() collapsed = false;
 
-  collapsed = false;
-  // isMobile = false;
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer , private router: Router) { }
 
   toggleSidebar() {
     this.collapsed = !this.collapsed;
@@ -52,5 +52,6 @@ export class SidebarComponent {
 toggleUserMenu() {
   this.userMenuOpen = !this.userMenuOpen;
 }
+
 
 }

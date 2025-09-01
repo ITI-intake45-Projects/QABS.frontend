@@ -12,9 +12,9 @@ export class AccountService {
 constructor(private http: HttpClient) { }
 
   // Register
-  Register(Admin: FormData): Observable<any> {
+  Register(formdata: FormData): Observable<any> {
 
-    return this.http.post(`${env.baseApi}Account/Register`, Admin);
+    return this.http.post(`${env.baseApi}Account/Register`, formdata);
   }
 
 

@@ -1,24 +1,25 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AccountService } from '../../../core/services/Account.service';
 import { Gender } from '../../../core/models/Enums/Gender.enum';
 import { Role } from '../../../core/models/Enums/Role.enum';
 import { SpecializationType } from '../../../core/models/Enums/SpecializationType.enum';
+import { AccountService } from '../../../core/services/Account.service';
 import { UserRegister } from '../../../core/models/Create/UserRegister';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
+  selector: 'app-teacherRegister',
+  templateUrl: './teacherRegister.component.html',
+  styleUrls: ['./teacherRegister.component.css'],
   standalone: false
 })
-export class RegisterComponent implements OnInit {
+export class TeacherRegisterComponent implements OnInit {
+
   userRegisterForm: FormGroup;
   dropdownOpen = false;
   dropdownSpecializationOpen = false;
   isLoading = false;
 
-  Gender = Gender;
+  // Gender = Gender;
   genders = [
     { id: Gender.Male, label: 'ذكر' },
     { id: Gender.Female, label: 'أنثى' }
@@ -48,7 +49,7 @@ export class RegisterComponent implements OnInit {
       Password: ['Test@123', [Validators.required, Validators.minLength(6)]],
       Gender: ['', Validators.required],
       Age: [null, [Validators.required]],
-      Role: [Role.Admin, Validators.required],
+      Role: [Role.Teacher, Validators.required],
       HourlyRate: [null],
       Specializations: [[]],
       ImageFile: [null]
@@ -109,13 +110,74 @@ export class RegisterComponent implements OnInit {
     return this.selectedSpecializations.includes(id);
   }
 
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      this.userRegisterForm.patchValue({ ImageFile: file });
+  // onFileChange(event: any) {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     this.selectedFile = file;
+  //     this.userRegisterForm.patchValue({ ImageFile: file });
+  //   }
+  // }
+
+  //  File Input
+previewUrl: string | ArrayBuffer | null = null;
+//   onFileChange(event: Event): void {
+//   const input = event.target as HTMLInputElement;
+//   if (input.files && input.files.length > 0) {
+//     const file = input.files[0];
+
+//     // للعرض كـ preview
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//       this.previewUrl = reader.result;
+//     };
+//     reader.readAsDataURL(file);
+
+//     // هنا تقدر تخزن الفايل في الفورم كنترول
+//     this.userRegisterForm.patchValue({ ImageFile: file });
+//   }
+// }
+
+ onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+
+      // Check size (max 10 MB)
+      if (this.selectedFile.size > 10 * 1024 * 1024) {
+        alert('File is too large! Max size is 10MB.');
+        this.removeFile();
+        return;
+      }
+
+      // Preview image
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
     }
+
+    this.userRegisterForm.patchValue({ ImageFile: this.selectedFile });
+    // هنا نصفر قيمة الـ input
+   input.value = '';
   }
+
+
+   // Remove file
+  removeFile(): void {
+    this.selectedFile = null;
+    this.previewUrl = null;
+  }
+
+  // Format file size
+  get fileSize(): string {
+    if (!this.selectedFile) return '';
+    const sizeInKB = this.selectedFile.size / 1024;
+    return sizeInKB < 1024
+      ? `${sizeInKB.toFixed(1)} KB`
+      : `${(sizeInKB / 1024).toFixed(1)} MB`;
+  }
+
 
   onSubmit() {
     this.isLoading = true;
@@ -144,7 +206,6 @@ export class RegisterComponent implements OnInit {
 
       this.accountSrv.Register(formData).subscribe({
         next: (res) =>{
-          this.isLoading = false;
           console.log(res);
           if(res.succeeded){
             console.log(
@@ -161,9 +222,36 @@ export class RegisterComponent implements OnInit {
           ,
         error: (err) =>{
           this.isLoading = false;
-          console.error('Error Registering User', err)
+          this.showToast('حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى',
+              'error'
+            );
+            console.error('Error Registering User', err.message);
         }
       });
     }
+    else {
+      this.isLoading = false;
+       this.showToast('برجاء ملء جميع الحقول المطلوبة',
+              'error'
+            )
+
+    }
+  }
+
+
+
+   message = '';
+  messageType: 'success' | 'error' = 'success';
+  showMessage = false;
+
+   showToast(message: string, type: 'success' | 'error') {
+    this.message = message;
+    this.messageType = type;
+    this.showMessage = true;
+
+    // تختفي تلقائياً بعد 3 ثواني
+    setTimeout(() => {
+      this.showMessage = false;
+    }, 3000);
   }
 }

@@ -41,6 +41,18 @@
   padding: 12px !important;
   border: 1px solid var(--gray-medium) !important;
 }
+.active-parent > div {
+  @apply bg-[var(--green-dark)] text-white;
+}
+
+.active-link {
+  @apply bg-[var(--gold-primary)] text-white;
+}
+
+.active-child > a {
+  @apply bg-[var(--gold-primary)] text-white;
+}
+
 
 
 

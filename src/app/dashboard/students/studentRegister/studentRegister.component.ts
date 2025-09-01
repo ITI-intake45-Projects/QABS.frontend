@@ -1,18 +1,19 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AccountService } from '../../../core/services/Account.service';
 import { Gender } from '../../../core/models/Enums/Gender.enum';
 import { Role } from '../../../core/models/Enums/Role.enum';
 import { SpecializationType } from '../../../core/models/Enums/SpecializationType.enum';
 import { UserRegister } from '../../../core/models/Create/UserRegister';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AccountService } from '../../../core/services/Account.service';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
+  selector: 'app-studentRegister',
+  templateUrl: './studentRegister.component.html',
+  styleUrls: ['./studentRegister.component.css'],
   standalone: false
 })
-export class RegisterComponent implements OnInit {
+export class StudentRegisterComponent implements OnInit {
+
   userRegisterForm: FormGroup;
   dropdownOpen = false;
   dropdownSpecializationOpen = false;
@@ -45,12 +46,12 @@ export class RegisterComponent implements OnInit {
       FirstName: ['', [Validators.required, Validators.minLength(2)]],
       LastName: ['', [Validators.required, Validators.minLength(2)]],
       Email: ['', [Validators.email]],
-      Password: ['Test@123', [Validators.required, Validators.minLength(6)]],
+      Password: ['', [Validators.required, Validators.minLength(6)]],
       Gender: ['', Validators.required],
       Age: [null, [Validators.required]],
-      Role: [Role.Admin, Validators.required],
-      HourlyRate: [null],
-      Specializations: [[]],
+      Role: [Role.Student, Validators.required],
+      // HourlyRate: [null],
+      // Specializations: [[]],
       ImageFile: [null]
     });
 
@@ -63,7 +64,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   get formControls() {
     return this.userRegisterForm.controls;
@@ -109,20 +110,38 @@ export class RegisterComponent implements OnInit {
     return this.selectedSpecializations.includes(id);
   }
 
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
+  // onFileChange(event: any) {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     this.selectedFile = file;
+  //     this.userRegisterForm.patchValue({ ImageFile: file });
+  //   }
+  // }
+
+  //  File Input
+  previewUrl: string | ArrayBuffer | null = null;
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      // للعرض كـ preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+
+      // هنا تقدر تخزن الفايل في الفورم كنترول
       this.userRegisterForm.patchValue({ ImageFile: file });
     }
   }
 
   onSubmit() {
     this.isLoading = true;
-    console.log(this.userRegisterForm.value);
+
     if (this.userRegisterForm.valid) {
       const formData = new FormData();
-
       const formValue: UserRegister = this.userRegisterForm.value;
 
       formData.append('FirstName', formValue.FirstName);
@@ -132,38 +151,65 @@ export class RegisterComponent implements OnInit {
       formData.append('Gender', formValue.Gender.toString());
       formData.append('Age', formValue.Age.toString());
       formData.append('Role', formValue.Role);
-      if (formValue.HourlyRate) formData.append('HourlyRate', formValue.HourlyRate.toString());
+      // if (formValue.HourlyRate) formData.append('HourlyRate', formValue.HourlyRate.toString());
 
-      if (this.selectedSpecializations.length > 0) {
-        this.selectedSpecializations.forEach(s => formData.append('Specializations', s.toString()));
-      }
+      // if (this.selectedSpecializations.length > 0) {
+      //   this.selectedSpecializations.forEach(s => formData.append('Specializations', s.toString()));
+      // }
 
       if (this.selectedFile) {
         formData.append('ImageFile', this.selectedFile);
       }
 
+
       this.accountSrv.Register(formData).subscribe({
-        next: (res) =>{
+        next: (res) => {
           this.isLoading = false;
           console.log(res);
-          if(res.succeeded){
-            console.log(
-              `User "${formValue.FirstName + ' ' + formValue.LastName}" registered successfully.✅`
-            )
+          if (res.succeeded) {
+            console.log(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`)
           }
-          else{
-            console.log(
-              `User "${formValue.FirstName + ' ' + formValue.LastName}" registered Failed. ❌`
-            )
+          else {
+            console.log(`للأسف فشل إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" ❌`)
           }
 
         }
-          ,
+        ,
         error: (err) =>{
           this.isLoading = false;
-          console.error('Error Registering User', err)
+          this.showToast('حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى',
+              'error'
+            );
+            console.error('Error Registering User', err);
         }
       });
     }
+    else {
+      this.isLoading = false;
+       this.showToast('برجاء ملء جميع الحقول المطلوبة',
+              'error'
+            )
+
+    }
   }
+
+
+ message = '';
+  messageType: 'success' | 'error' = 'success';
+  showMessage = false;
+
+   showToast(message: string, type: 'success' | 'error') {
+    this.message = message;
+    this.messageType = type;
+    this.showMessage = true;
+
+    // تختفي تلقائياً بعد 3 ثواني
+    setTimeout(() => {
+      this.showMessage = false;
+    }, 3000);
+  }
+
+
+
 }
+

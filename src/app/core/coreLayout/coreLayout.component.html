@@ -1,0 +1,28 @@
+<!-- core-layout.component.html
+<div class="flex h-screen w-full overflow-hidden">
+  <!-- Sidebar --
+  <app-sidebar
+    [items]="sidebarItems"
+    [collapsed]="isCollapsed"
+    class="transition-all duration-300"
+    [ngClass]="isCollapsed ? 'w-20' : 'w-72'">
+  </app-sidebar>
+
+  <!-- Dashboard --
+  <div class="flex-1 bg-[var(--gray-light)] overflow-y-auto transition-all duration-300">
+    <app-dashboardlayout></app-dashboardlayout>
+  </div>
+</div> -->
+
+
+<div class="flex h-screen w-full overflow-hidden">
+  <!-- Sidebar -->
+  <app-sidebar
+    [items]="sidebarItems"
+    [collapsed]="collapsed">
+  </app-sidebar>
+
+  <!-- Dashboard -->
+  <app-dashboardlayout class="flex-1"></app-dashboardlayout>
+</div>
+
