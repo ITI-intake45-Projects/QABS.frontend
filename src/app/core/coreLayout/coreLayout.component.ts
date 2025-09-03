@@ -19,13 +19,13 @@ export class CoreLayoutComponent implements OnInit {
   sidebarItems: SidebarItem[] = [
     { label: 'لوحة التحكم', icon: Icons['dashboard'], route: '' },
     { label: 'المعلمين', icon: Icons['teachers'], route: '' , children: [
-      { label: 'تسجيل معلم جديد+', route: '/teachers/register-teacher' },
-      { label: 'Security', route: 'register-teacher' }
+      { label: 'تسجيل معلم جديد+', route: '/dashboard/teachers/register-teacher' },
+      { label: 'قائمة المعلمين', route: '/dashboard/teachers/list-teachers' }
     ] },
     {
       label: 'الطلاب', icon: Icons['students'], route: '', children: [
-        { label: 'تسجيل طالب جديد+', route: '/students/register-student' },
-        { label: 'Security', route: 'register-student' }
+        { label: 'تسجيل طالب جديد+', route: '/dashboard/students/register-student' },
+        { label: 'قائمة الطلاب', route: '/dashboard/students/list-students' }
       ]
     },
     { label: 'الاشتراكات', icon: Icons['enrollment'], route: '/users' },

@@ -1,0 +1,68 @@
+[
+  {
+    "studentId": "ST1001",
+    "firstName": "Omar",
+    "lastName": "Khaled",
+    "gender": "Male",
+    "age": 22,
+    "profileImg": "https://randomuser.me/api/portraits/men/32.jpg",
+    "dateCreated": "2024-01-15T00:00:00",
+    "lastLoginDate": "2025-08-28T12:30:00",
+    "studentpayments": [
+      {
+        "paymentId": "P10001",
+        "amount": 1500,
+        "date": "2025-08-01T10:00:00",
+        "status": "Paid"
+      },
+      {
+        "paymentId": "P10002",
+        "amount": 2000,
+        "date": "2025-08-20T14:30:00",
+        "status": "Pending"
+      }
+    ]
+  },
+  {
+    "studentId": "ST1002",
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "gender": "Female",
+    "age": 20,
+    "profileImg": "https://randomuser.me/api/portraits/women/44.jpg",
+    "dateCreated": "2024-02-10T00:00:00",
+    "lastLoginDate": "2025-08-29T09:45:00",
+    "studentpayments": [
+      {
+        "paymentId": "P10003",
+        "amount": 1200,
+        "date": "2025-07-15T09:00:00",
+        "status": "Paid"
+      }
+    ]
+  },
+  {
+    "studentId": "ST1003",
+    "firstName": "Mark",
+    "lastName": "Smith",
+    "gender": "Male",
+    "age": 23,
+    "profileImg": "https://randomuser.me/api/portraits/men/11.jpg",
+    "dateCreated": "2024-03-20T00:00:00",
+    "lastLoginDate": "2025-08-30T18:20:00",
+    "studentpayments": [
+      {
+        "paymentId": "P10004",
+        "amount": 1800,
+        "date": "2025-06-10T16:00:00",
+        "status": "Paid"
+      },
+      {
+        "paymentId": "P10005",
+        "amount": 1900,
+        "date": "2025-08-25T11:15:00",
+        "status": "Failed"
+      }
+    ]
+  }
+]

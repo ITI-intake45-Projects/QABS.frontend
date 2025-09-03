@@ -17,9 +17,9 @@ import { SharedModule } from '../shared/shared.module';
     // RouterModule.forChild(),
     BrowserModule,
     DashboardpagesModule,
-    SharedModule
-
-  ],
+    SharedModule,
+    DashboardRoutesModule
+],
   declarations: [
     CoreLayoutComponent
 

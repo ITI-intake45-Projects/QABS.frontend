@@ -1,0 +1,282 @@
+<div class="flex h-screen bg-red-500">
+  <!-- Sidebar (Teachers List) -->
+  <div class=" border-r border-gray-200 flex flex-col">
+
+    <!-- Searchbar -->
+    <div class="p-4 border-b border-gray-200">
+      <input type="text" placeholder="Search by name..."
+        class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+    </div>
+
+    <!-- Filter by Specialization -->
+    <div class="p-4 border-b border-gray-200">
+      <p class="font-semibold mb-2">Filter by Specialization</p>
+      <div class="space-y-2 max-h-32 overflow-y-auto">
+        <label class="flex items-center">
+          <input type="checkbox" class="mr-2"> Math
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" class="mr-2"> Physics
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" class="mr-2"> English
+        </label>
+      </div>
+    </div>
+
+    <!-- Teachers List -->
+    <div class="flex-1 overflow-y-auto">
+      <ul class="divide-y divide-gray-200">
+        <!-- Teacher Item -->
+        <li class="p-4 flex items-center justify-between hover:bg-gray-100">
+          <div class="flex items-center">
+            <img src="https://via.placeholder.com/40" alt="Teacher" class="w-10 h-10 rounded-full object-cover mr-3">
+            <div>
+              <p class="font-medium text-gray-800">John Doe</p>
+              <p class="text-sm text-gray-500">Students: 15</p>
+            </div>
+          </div>
+          <button class="text-indigo-600 hover:underline text-sm">Details</button>
+        </li>
+        <li class="p-4 flex items-center justify-between hover:bg-gray-100">
+          <div class="flex items-center">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Ahmed_el-Tayeb_1.jpg/640px-Ahmed_el-Tayeb_1.jpg"
+              alt="Teacher" class="w-10 h-10 rounded-full object-cover mr-3">
+            <div>
+              <p class="font-medium text-gray-800">Sarah Smith</p>
+              <p class="text-sm text-gray-500">Students: 22</p>
+            </div>
+          </div>
+          <button class="text-indigo-600 hover:underline text-sm">Details</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Detail Panel -->
+  <div class="flex-1 p-6 overflow-y-auto">
+    <div class="bg-white shadow rounded-lg p-6">
+      <!-- Teacher Info -->
+      <div class="flex flex-col  gap-2 mb-6">
+        <!-- Teacher Image -->
+        <!-- <div class="flex items-center flex-col justify-center mb-6">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Ahmed_el-Tayeb_1.jpg/640px-Ahmed_el-Tayeb_1.jpg"
+            class="w-24 h-24 rounded-full mr-6" alt="Teacher">
+          <h2 class="text-2xl font-bold">John Doe</h2>
+
+        </div> -->
+
+
+
+        <!-- Teacher Details -->
+        <div class="flex items-center justify-center mb-6 space-x-20">
+          <!-- Teacher Image -->
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Ahmed_el-Tayeb_1.jpg/640px-Ahmed_el-Tayeb_1.jpg"
+            class="w-40 h-40 rounded-full mr-6 shadow-md border" alt="Teacher">
+
+          <!-- Teacher Info (Styled List instead of Table) -->
+          <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-xl">
+            <div>
+              <p class="text-gray-500 font-medium text-xl">الاسم</p>
+              <p class="text-gray-900 font-semibold">John Doe</p>
+            </div>
+            <!-- <div>
+              <p class="text-gray-500 font-medium">العمر</p>
+              <p class="text-gray-900">34</p>
+            </div>
+            <div>
+              <p class="text-gray-500 font-medium">الجنس</p>
+              <p class="text-gray-900">ذكر</p>
+            </div> -->
+            <div>
+              <p class="text-gray-500 font-medium text-xl">سعر الساعة</p>
+              <p class="text-gray-900">$25/hr</p>
+            </div>
+            <div class="col-span-2">
+              <p class="text-gray-500 font-medium text-xl">التخصصات</p>
+              <p class="text-gray-900">رياضيات، فيزياء</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- Students Section
+      <h3 class="text-xl font-semibold mb-4">الطلاب</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+        <div class="flex items-center space-x-2">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Ahmed_el-Tayeb_1.jpg/640px-Ahmed_el-Tayeb_1.jpg" class="w-10 h-10 rounded-full" alt="Student">
+          <p class="text-sm text-gray-700">Alice Johnson</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Ahmed_el-Tayeb_1.jpg/640px-Ahmed_el-Tayeb_1.jpg" class="w-10 h-10 rounded-full" alt="Student">
+          <p class="text-sm text-gray-700">Mark Smith</p>
+        </div>
+        <!-- Repeat dynamically --
+      </div> -->
+
+      <!-- Students Section -->
+      <div class="flex items-center justify-between mb-4 relative">
+        <h3 class="text-xl font-semibold">الطلاب ({{ students.length }})</h3>
+
+        <!-- Navigation Buttons -->
+        <div class="flex space-x-2">
+          <!-- Previous Button -->
+          <button (click)="previousStudent()" [disabled]="currentIndex === 0" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-gray-300 bg-white
+         flex items-center justify-center shadow-md transition-all duration-300
+         hover:border-blue-500 hover:text-blue-500
+         disabled:opacity-50 disabled:cursor-not-allowed
+         disabled:hover:border-gray-300 disabled:hover:text-gray-400" aria-label="Previous students">
+
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+
+          <!-- Next Button -->
+          <button (click)="nextStudent()" [disabled]="currentIndex >= students.length - itemsPerView" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-gray-300 bg-white
+         flex items-center justify-center shadow-md transition-all duration-300
+         hover:border-blue-500 hover:text-blue-500
+         disabled:opacity-50 disabled:cursor-not-allowed
+         disabled:hover:border-gray-300 disabled:hover:text-gray-400" aria-label="Next students">
+
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+
+
+
+        </div>
+      </div>
+      <!-- Slider -->
+      <div class="relative overflow-hidden cursor-pointer p-8 mb-8 border-b-2 border-gray-200">
+        <div class="flex transition-transform duration-500 ease-out " [style.transform]="getTransform()">
+          <!-- Student Card -->
+          <div *ngFor="let student of students" class="flex-shrink-0 px-2 sm:px-3" [style.width.%]="100 / itemsPerView">
+
+            <div class="flex items-center space-x-2 bg-white p-2 rounded-lg shadow-sm h-16
+            transform transition-transform duration-300 ease-in-out hover:scale-105">
+              <img [src]="student.img" class="w-10 h-10 rounded-full object-cover" alt="Student">
+              <p class="text-sm text-gray-700">{{ student.name }}</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Teacher Availability -->
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-[var(--green-primary)]">
+          مواعيد المعلم المتاحة
+        </h3>
+
+        <!-- Add Button -->
+        <button (click)="openAddModal()" class="px-4 py-2 text-sm rounded-md bg-[var(--gold-primary)] text-white
+           hover:bg-[var(--gold-secondary)] transition-colors shadow-md cursor-pointer flex items-center gap-2">
+          <i class="fas fa-plus"></i>
+          إضافة موعد
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto rounded-lg shadow-sm border border-[var(--gray-medium)]">
+        <table class="min-w-full text-sm">
+          <thead class="bg-[var(--green-primary)] text-white">
+            <tr>
+              <th class="px-4 py-2 text-right">اليوم</th>
+              <th class="px-4 py-2 text-right">وقت البدء</th>
+              <th class="px-4 py-2 text-right">وقت الانتهاء</th>
+              <th class="px-4 py-2 text-center">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody class="bg-[var(--background-primary)] divide-y divide-[var(--gray-medium)]">
+            <tr *ngFor="let slot of availability; let i = index" class="hover:bg-[var(--gray-light)] transition-colors">
+
+              <td class="px-4 py-2 text-[var(--text-primary)]">{{ slot.day }}</td>
+              <td class="px-4 py-2 text-[var(--text-secondary)]">{{ slot.start }}</td>
+              <td class="px-4 py-2 text-[var(--text-secondary)]">{{ slot.end }}</td>
+
+              <td class="px-4 py-2 flex justify-center gap-2">
+                <button (click)="editSlot(slot)" class="px-3 py-1 text-xs rounded-md bg-[var(--gold-primary)] text-white
+                   hover:bg-[var(--gold-secondary)] transition-colors shadow-sm cursor-pointer">
+                  تعديل
+                </button>
+                <button (click)="deleteSlot(i)" class="px-3 py-1 text-xs rounded-md bg-[var(--green-primary)] text-white
+                   hover:bg-[var(--green-dark)] transition-colors shadow-sm cursor-pointer">
+                  حذف
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add Modal -->
+      <div *ngIf="showAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
+          <!-- Close Button -->
+          <button (click)="closeAddModal()"
+            class=" absolute top-2 right-2 text-gray-500 hover:text-red-700 cursor-pointer">
+            <i class="fas fa-times"></i>
+          </button>
+
+          <h3 class="text-lg font-semibold text-[var(--green-primary)] my-4">إضافة موعد جديد</h3>
+
+          <!-- Form -->
+          <div class="space-y-4">
+            <!-- اليوم -->
+            <div>
+              <label class="block text-sm mb-1 text-[var(--text-secondary)]">اليوم</label>
+              <input [(ngModel)]="newSlot.day" type="date" class="w-full border border-[var(--gray-medium)] rounded-lg p-2.5 text-sm text-[var(--text-primary)]
+             bg-white shadow-sm
+             focus:outline-none focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+             transition-all duration-200">
+            </div>
+
+            <!-- وقت البدء -->
+            <div>
+              <label class="block text-sm mb-1 text-[var(--text-secondary)]">وقت البدء</label>
+              <input [(ngModel)]="newSlot.start" type="time" class="w-full border border-[var(--gray-medium)] rounded-lg p-2.5 text-sm text-[var(--text-primary)]
+             bg-white shadow-sm
+             focus:outline-none focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+             transition-all duration-200">
+            </div>
+
+            <!-- وقت الانتهاء -->
+            <div>
+              <label class="block text-sm mb-1 text-[var(--text-secondary)]">وقت الانتهاء</label>
+              <input [(ngModel)]="newSlot.end" type="time" class="w-full border border-[var(--gray-medium)] rounded-lg p-2.5 text-sm text-[var(--text-primary)]
+             bg-white shadow-sm
+             focus:outline-none focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+             transition-all duration-200">
+            </div>
+          </div>
+
+
+          <!-- Actions -->
+          <div class="mt-4 flex justify-end gap-2">
+            <button (click)="closeAddModal()"
+              class="px-3 py-1 text-sm rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors cursor-pointer">
+              إلغاء
+            </button>
+            <button (click)="saveNewSlot()"
+              class="px-3 py-1 text-sm rounded-md bg-[var(--gold-primary)] text-white hover:bg-[var(--gold-secondary)] transition-colors cursor-pointer">
+              حفظ
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </div>
+</div>

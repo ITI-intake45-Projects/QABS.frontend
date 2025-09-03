@@ -1,0 +1,73 @@
+<!-- Table Header -->
+<div class="bg-[var(--color-light-blue)] px-6 py-4">
+  <div class="grid grid-cols-12 gap-4 items-center text-sm font-medium text-[var(--color-oxford-blue)]">
+    <div class="col-span-2">Name</div>
+    <div class="col-span-2">ID</div>
+    <div class="col-span-1">Gender</div>
+    <div class="col-span-1">Age</div>
+    <div class="col-span-2">Date Created</div>
+    <div class="col-span-2">Last Login</div>
+    <div class="col-span-2">Actions</div>
+  </div>
+</div>
+
+<!-- Table Body -->
+<div class="divide-y divide-gray-200">
+  <div *ngFor="let student of paginatedStudents; trackBy: trackByStudentId"
+    class="px-6 py-4 hover:bg-[var(--color-warmDark-gray)] transition-colors">
+
+    <div class="grid grid-cols-12 gap-4 items-center">
+      <!-- Name with Avatar -->
+      <div class="col-span-2 flex items-center gap-3">
+        <img [src]="student.profileImg || 'assets/default-avatar.png'"
+             alt="" class="w-10 h-10 rounded-full object-cover">
+        <div>
+          <div class="font-medium text-gray-900">{{ student.firstName + " " + student.lastName }}</div>
+        </div>
+      </div>
+
+      <!-- ID -->
+      <div class="col-span-2 text-sm text-gray-700">
+        #{{ student.studentId }}
+      </div>
+
+      <!-- Gender -->
+      <div class="col-span-1">
+        <span [ngClass]="student.gender === 'Male' ? 'text-blue-600' : 'text-pink-600'">
+          {{ student.gender }}
+        </span>
+      </div>
+
+      <!-- Age -->
+      <div class="col-span-1 text-sm text-gray-600">
+        {{ student.age }}
+      </div>
+
+      <!-- Date Created -->
+      <div class="col-span-2 text-sm text-gray-600">
+        {{ student.dateCreated | date:'short' }}
+      </div>
+
+      <!-- Last Login -->
+      <div class="col-span-2 text-sm text-gray-600">
+        {{ student.lastLoginDate | date:'short' }}
+      </div>
+
+      <!-- Actions -->
+      <div class="col-span-2 flex gap-2">
+        <button (click)="viewStudent(student)"
+          class="px-3 py-1 text-xs rounded bg-[var(--color-mid-blue)] text-white hover:bg-[var(--color-oxford-blue)]">
+          View
+        </button>
+        <button (click)="editStudent(student)"
+          class="px-3 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700">
+          Edit
+        </button>
+        <button (click)="deleteStudent(student)"
+          class="px-3 py-1 text-xs rounded bg-red-600 text-white hover:bg-red-700">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

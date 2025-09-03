@@ -46,7 +46,7 @@ export class StudentRegisterComponent implements OnInit {
       FirstName: ['', [Validators.required, Validators.minLength(2)]],
       LastName: ['', [Validators.required, Validators.minLength(2)]],
       Email: ['', [Validators.email]],
-      Password: ['', [Validators.required, Validators.minLength(6)]],
+      Password: ['Test@123', [Validators.required, Validators.minLength(6)]],
       Gender: ['', Validators.required],
       Age: [null, [Validators.required]],
       Role: [Role.Student, Validators.required],
@@ -119,26 +119,69 @@ export class StudentRegisterComponent implements OnInit {
   // }
 
   //  File Input
-  previewUrl: string | ArrayBuffer | null = null;
-  onFileChange(event: Event): void {
+  // previewUrl: string | ArrayBuffer | null = null;
+  // onFileChange(event: Event): void {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length > 0) {
+  //     const file = input.files[0];
+
+  //     // للعرض كـ preview
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       this.previewUrl = reader.result;
+  //     };
+  //     reader.readAsDataURL(file);
+
+  //     // هنا تقدر تخزن الفايل في الفورم كنترول
+  //     this.userRegisterForm.patchValue({ ImageFile: file });
+  //   }
+  // }
+
+previewUrl: string | ArrayBuffer | null = null;
+   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      const file = input.files[0];
+      this.selectedFile = input.files[0];
 
-      // للعرض كـ preview
+      // Check size (max 10 MB)
+      if (this.selectedFile.size > 10 * 1024 * 1024) {
+        alert('File is too large! Max size is 10MB.');
+        this.removeFile();
+        return;
+      }
+
+      // Preview image
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result;
       };
-      reader.readAsDataURL(file);
-
-      // هنا تقدر تخزن الفايل في الفورم كنترول
-      this.userRegisterForm.patchValue({ ImageFile: file });
+      reader.readAsDataURL(this.selectedFile);
     }
+
+    this.userRegisterForm.patchValue({ ImageFile: this.selectedFile });
+    // هنا نصفر قيمة الـ input
+   input.value = '';
+  }
+
+
+   // Remove file
+  removeFile(): void {
+    this.selectedFile = null;
+    this.previewUrl = null;
+  }
+
+  // Format file size
+  get fileSize(): string {
+    if (!this.selectedFile) return '';
+    const sizeInKB = this.selectedFile.size / 1024;
+    return sizeInKB < 1024
+      ? `${sizeInKB.toFixed(1)} KB`
+      : `${(sizeInKB / 1024).toFixed(1)} MB`;
   }
 
   onSubmit() {
     this.isLoading = true;
+    console.log(this.userRegisterForm.value);
 
     if (this.userRegisterForm.valid) {
       const formData = new FormData();
@@ -166,6 +209,9 @@ export class StudentRegisterComponent implements OnInit {
         next: (res) => {
           this.isLoading = false;
           console.log(res);
+          this.showToast(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`,
+              'success'
+            );
           if (res.succeeded) {
             console.log(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`)
           }

@@ -4,16 +4,41 @@ import { RouterModule, Routes } from '@angular/router';
 import { StudentRegisterComponent } from './students/studentRegister/studentRegister.component';
 import { DashboardlayoutComponent } from './dashboardlayout/dashboardlayout.component';
 import { TeacherRegisterComponent } from './teachers/teacherRegister/teacherRegister.component';
+import { TeacherListComponent } from './teachers/teacherList/teacherList.component';
+import { CoreLayoutComponent } from '../core/coreLayout/coreLayout.component';
+import { StudentListComponent } from './students/studentList/studentList.component';
 
+
+// const routes: Routes = [
+//   { path: 'students',  children: [
+//     { path: 'register-student', component: StudentRegisterComponent }
+//   ] },
+
+//   { path: 'teachers', children: [
+//     { path: 'register-teacher', component: TeacherRegisterComponent },
+//     { path: 'list-teachers', component: TeacherListComponent }
+//   ] },
 
 const routes: Routes = [
-  { path: 'students',  children: [
-    { path: 'register-student', component: StudentRegisterComponent }
-  ] },
 
-  { path: 'teachers', children: [
-    { path: 'register-teacher', component: TeacherRegisterComponent }
-  ] },
+  {
+    path: 'dashboard', component: CoreLayoutComponent, children: [
+      {
+        path: 'students', children: [
+          { path: 'register-student', component: StudentRegisterComponent },
+          { path: 'list-students', component: StudentListComponent }
+        ]
+      },
+
+      {
+        path: 'teachers', children: [
+          { path: 'register-teacher', component: TeacherRegisterComponent },
+          { path: 'list-teachers', component: TeacherListComponent }
+        ]
+      }
+
+    ]
+  },
 
 
   // {
