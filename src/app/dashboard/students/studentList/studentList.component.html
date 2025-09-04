@@ -16,7 +16,7 @@
       <tbody class="divide-y divide-[var(--gray-light)] bg-[var(--background-secondary)]">
         <tr
           *ngFor="let student of paginatedStudents; trackBy: trackByStudentId"
-          (click)="viewStudent(student)"
+          (click)="goToStudentDetails(student.studentId)"
           class="hover:bg-[var(--gray-light)] transition cursor-pointer"
         >
           <!-- صورة -->
@@ -60,7 +60,7 @@
             >
               &#8942;
             </button>
-            
+
               <!-- القائمة -->
               <div
               *ngIf="menuOpenFor === student.studentId"
@@ -82,7 +82,7 @@
                 </button>
               </div>
             </div>
-            
+
             </div>
           </td>
         </tr>

@@ -7,6 +7,7 @@ import { TeacherRegisterComponent } from './teachers/teacherRegister/teacherRegi
 import { TeacherListComponent } from './teachers/teacherList/teacherList.component';
 import { CoreLayoutComponent } from '../core/coreLayout/coreLayout.component';
 import { StudentListComponent } from './students/studentList/studentList.component';
+import { StudentDetailsComponent } from './students/studentDetails/studentDetails.component';
 
 
 // const routes: Routes = [
@@ -26,7 +27,8 @@ const routes: Routes = [
       {
         path: 'students', children: [
           { path: 'register-student', component: StudentRegisterComponent },
-          { path: 'list-students', component: StudentListComponent }
+          { path: 'list-students', component: StudentListComponent },
+          { path: 'details/:id', component: StudentDetailsComponent }
         ]
       },
 

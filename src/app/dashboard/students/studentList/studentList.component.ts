@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Student } from '../../../core/models/Details/Student';
 import { StudentService } from '../../../core/services/student.service';
 import { Gender } from '../../../core/models/Enums/Gender.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-studentList',
@@ -13,19 +14,19 @@ export class StudentListComponent implements OnInit {
 
   students: Student[] = [];
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 1;
 
   genders = [
     { id: Gender.Male, label: 'ذكر' },
     { id: Gender.Female, label: 'أنثى' }
   ];
-  
+
   // modal states (simulate)
   selectedStudent?: Student;
   showViewModal = false;
   showEditModal = false;
 
-  constructor(private studentService: StudentService) { }
+  constructor(private studentService: StudentService , private router: Router) { }
 
   ngOnInit() {
     this.loadStudents();
@@ -33,11 +34,11 @@ export class StudentListComponent implements OnInit {
 
   menuOpenFor: string | null = null;
   menuPosition = { x: 0, y: 0 };
-  
+
   toggleMenu(studentId: string, event: MouseEvent) {
     event.stopPropagation();
     this.menuOpenFor = this.menuOpenFor === studentId ? null : studentId;
-  
+
     if (this.menuOpenFor) {
       // موقع الزر بالنسبة للصفحة
       const rect = (event.target as HTMLElement).getBoundingClientRect();
@@ -47,7 +48,7 @@ export class StudentListComponent implements OnInit {
       };
     }
   }
-  
+
   closeMenu() {
     this.menuOpenFor = null;
   }
@@ -81,6 +82,13 @@ export class StudentListComponent implements OnInit {
         console.log(err.message);
       }
     });
+  }
+
+  goToStudentDetails(studentId: string) {
+    // Navigate to the student details page
+    // Assuming you have a router set up
+    this.router.navigate(['/dashboard/students/details', studentId]);
+    console.log(`Navigating to details of student ID: ${studentId}`);
   }
 
   // pagination
