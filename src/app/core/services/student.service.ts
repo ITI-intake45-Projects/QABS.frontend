@@ -15,8 +15,8 @@ export class StudentService {
 
   constructor(private http: HttpClient) {}
 
-  getStudents(): Observable<Student[]> {
-    return this.http.get<Student[]>(`${env.baseApi}Student/GetAllStudents`);
+  getStudents(): Observable<any> {
+    return this.http.get(`${env.baseApi}Student/GetAllStudents`);
   }
 }
 

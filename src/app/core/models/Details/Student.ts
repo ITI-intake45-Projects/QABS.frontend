@@ -1,10 +1,11 @@
+import { Gender } from "../Enums/Gender.enum";
 import { StudentPayment } from "./StudentPayment";
 
 export interface Student {
    studentId: string;
   firstName: string;
   lastName: string;
-  gender: 'Male' | 'Female' | null;
+  gender: Gender;
   age: number;
   profileImg?: string;
   dateCreated?: string;

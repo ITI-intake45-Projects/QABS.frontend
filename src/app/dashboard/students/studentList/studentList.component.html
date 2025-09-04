@@ -1,73 +1,122 @@
-<!-- Table Header -->
-<div class="bg-[var(--color-light-blue)] px-6 py-4">
-  <div class="grid grid-cols-12 gap-4 items-center text-sm font-medium text-[var(--color-oxford-blue)]">
-    <div class="col-span-2">Name</div>
-    <div class="col-span-2">ID</div>
-    <div class="col-span-1">Gender</div>
-    <div class="col-span-1">Age</div>
-    <div class="col-span-2">Date Created</div>
-    <div class="col-span-2">Last Login</div>
-    <div class="col-span-2">Actions</div>
+<div class="p-6 bg-[var(--background-primary)]" dir="rtl">
+  <h2 class="text-xl font-bold text-[var(--green-primary)] mb-4">قائمة الطلاب</h2>
+
+  <!-- الجدول -->
+  <div class="overflow-x-auto rounded-lg shadow-md border border-[var(--gray-medium)] relative">
+    <table class="min-w-full divide-y divide-[var(--gray-medium)]">
+      <thead class="bg-[var(--green-secondary)] text-white">
+        <tr>
+          <th class="px-4 py-3 text-right text-sm font-semibold">الصورة</th>
+          <th class="px-4 py-3 text-right text-sm font-semibold">الاسم</th>
+          <th class="px-4 py-3 text-right text-sm font-semibold">النوع</th>
+          <th class="px-4 py-3 text-right text-sm font-semibold">العمر</th>
+          <th class="px-4 py-3 text-center text-sm font-semibold">الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[var(--gray-light)] bg-[var(--background-secondary)]">
+        <tr
+          *ngFor="let student of paginatedStudents; trackBy: trackByStudentId"
+          (click)="viewStudent(student)"
+          class="hover:bg-[var(--gray-light)] transition cursor-pointer"
+        >
+          <!-- صورة -->
+          <td class="px-4 py-3">
+            <img
+              [src]="student.profileImg || 'assets/images/default-profile.png'"
+              alt="صورة الطالب"
+              class="w-10 h-10 rounded-full border border-[var(--gray-medium)] object-cover"
+            />
+          </td>
+
+          <!-- الاسم -->
+          <td class="px-4 py-3 text-[var(--text-primary)] font-medium">
+            {{ student.firstName }} {{ student.lastName }}
+          </td>
+
+          <!-- النوع -->
+          <td class="px-4 py-3 text-[var(--text-secondary)]">
+            {{ student.gender === 1 ? 'ذكر' : 'أنثى' }}
+          </td>
+
+          <!-- العمر -->
+          <td class="px-4 py-3 text-[var(--text-secondary)]">{{ student.age }}</td>
+
+          <!-- الإجراءات -->
+          <td class="px-4 py-3 text-center relative">
+            <div class="flex justify-center items-center space-x-2 space-x-reverse">
+              <!-- زر الحذف -->
+              <button
+                (click)="deleteStudent(student); $event.stopPropagation()"
+                class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded-lg text-sm"
+              >
+                حذف
+              </button>
+
+             <!-- منيو 3 نقاط -->
+             <div class="relative" (click)="$event.stopPropagation()">
+              <button
+              class="p-2 rounded-full hover:bg-[var(--gray-light)]"
+              (click)="toggleMenu(student.studentId, $event)"
+            >
+              &#8942;
+            </button>
+            
+              <!-- القائمة -->
+              <div
+              *ngIf="menuOpenFor === student.studentId"
+              class="fixed w-32 bg-white border border-[var(--gray-medium)] rounded-lg shadow-lg z-50"
+              [style.top.px]="menuPosition.y"
+              [style.left.px]="menuPosition.x"
+            >
+                <button
+                  (click)="viewStudent(student); closeMenu()"
+                  class="block w-full px-4 py-2 text-right text-sm text-[var(--text-primary)] hover:bg-[var(--gray-light)]"
+                >
+                  التفاصيل
+                </button>
+                <button
+                  (click)="deleteStudent(student); closeMenu()"
+                  class="block w-full px-4 py-2 text-right text-sm text-red-600 hover:bg-[var(--gray-light)]"
+                >
+                  حذف
+                </button>
+              </div>
+            </div>
+            
+            </div>
+          </td>
+        </tr>
+
+        <!-- في حالة عدم وجود طلاب -->
+        <tr *ngIf="paginatedStudents.length === 0">
+          <td colspan="5" class="px-4 py-6 text-center text-[var(--text-secondary)]">
+            لا يوجد طلاب حاليًا.
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div>
 
-<!-- Table Body -->
-<div class="divide-y divide-gray-200">
-  <div *ngFor="let student of paginatedStudents; trackBy: trackByStudentId"
-    class="px-6 py-4 hover:bg-[var(--color-warmDark-gray)] transition-colors">
+  <!-- الباجينيشن -->
+  <div class="flex justify-between items-center mt-4">
+    <button
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 rounded-lg bg-[var(--green-primary)] text-white hover:bg-[var(--green-dark)] disabled:opacity-50"
+    >
+      السابق
+    </button>
 
-    <div class="grid grid-cols-12 gap-4 items-center">
-      <!-- Name with Avatar -->
-      <div class="col-span-2 flex items-center gap-3">
-        <img [src]="student.profileImg || 'assets/default-avatar.png'"
-             alt="" class="w-10 h-10 rounded-full object-cover">
-        <div>
-          <div class="font-medium text-gray-900">{{ student.firstName + " " + student.lastName }}</div>
-        </div>
-      </div>
+    <span class="text-[var(--text-primary)] font-medium">
+      صفحة {{ currentPage }} من {{ totalPages }}
+    </span>
 
-      <!-- ID -->
-      <div class="col-span-2 text-sm text-gray-700">
-        #{{ student.studentId }}
-      </div>
-
-      <!-- Gender -->
-      <div class="col-span-1">
-        <span [ngClass]="student.gender === 'Male' ? 'text-blue-600' : 'text-pink-600'">
-          {{ student.gender }}
-        </span>
-      </div>
-
-      <!-- Age -->
-      <div class="col-span-1 text-sm text-gray-600">
-        {{ student.age }}
-      </div>
-
-      <!-- Date Created -->
-      <div class="col-span-2 text-sm text-gray-600">
-        {{ student.dateCreated | date:'short' }}
-      </div>
-
-      <!-- Last Login -->
-      <div class="col-span-2 text-sm text-gray-600">
-        {{ student.lastLoginDate | date:'short' }}
-      </div>
-
-      <!-- Actions -->
-      <div class="col-span-2 flex gap-2">
-        <button (click)="viewStudent(student)"
-          class="px-3 py-1 text-xs rounded bg-[var(--color-mid-blue)] text-white hover:bg-[var(--color-oxford-blue)]">
-          View
-        </button>
-        <button (click)="editStudent(student)"
-          class="px-3 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700">
-          Edit
-        </button>
-        <button (click)="deleteStudent(student)"
-          class="px-3 py-1 text-xs rounded bg-red-600 text-white hover:bg-red-700">
-          Delete
-        </button>
-      </div>
-    </div>
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 rounded-lg bg-[var(--green-primary)] text-white hover:bg-[var(--green-dark)] disabled:opacity-50"
+    >
+      التالي
+    </button>
   </div>
 </div>
