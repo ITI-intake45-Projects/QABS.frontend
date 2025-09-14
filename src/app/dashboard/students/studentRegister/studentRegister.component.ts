@@ -137,8 +137,8 @@ export class StudentRegisterComponent implements OnInit {
   //   }
   // }
 
-previewUrl: string | ArrayBuffer | null = null;
-   onFileChange(event: Event): void {
+  previewUrl: string | ArrayBuffer | null = null;
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
@@ -160,11 +160,11 @@ previewUrl: string | ArrayBuffer | null = null;
 
     this.userRegisterForm.patchValue({ ImageFile: this.selectedFile });
     // هنا نصفر قيمة الـ input
-   input.value = '';
+    input.value = '';
   }
 
 
-   // Remove file
+  // Remove file
   removeFile(): void {
     this.selectedFile = null;
     this.previewUrl = null;
@@ -209,42 +209,47 @@ previewUrl: string | ArrayBuffer | null = null;
         next: (res) => {
           this.isLoading = false;
           console.log(res);
-          this.showToast(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`,
+          if (res.isSuccess) {
+            this.showToast(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`,
               'success'
             );
-          if (res.succeeded) {
-            console.log(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`)
           }
           else {
-            console.log(`للأسف فشل إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" ❌`)
+            this.showToast(res.message,
+              'error'
+            );
           }
+
+
+
+
 
         }
         ,
-        error: (err) =>{
+        error: (err) => {
           this.isLoading = false;
           this.showToast('حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى',
-              'error'
-            );
-            console.error('Error Registering User', err);
+            'error'
+          );
+          console.error('Error Registering User', err);
         }
       });
     }
     else {
       this.isLoading = false;
-       this.showToast('برجاء ملء جميع الحقول المطلوبة',
-              'error'
-            )
+      this.showToast('برجاء ملء جميع الحقول المطلوبة',
+        'error'
+      )
 
     }
   }
 
 
- message = '';
+  message = '';
   messageType: 'success' | 'error' = 'success';
   showMessage = false;
 
-   showToast(message: string, type: 'success' | 'error') {
+  showToast(message: string, type: 'success' | 'error') {
     this.message = message;
     this.messageType = type;
     this.showMessage = true;

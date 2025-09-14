@@ -89,3 +89,6 @@
   --background-secondary: #f9f9f9;
   /* خلفية الأقسام الثانوية */
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

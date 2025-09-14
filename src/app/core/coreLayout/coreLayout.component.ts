@@ -28,7 +28,12 @@ export class CoreLayoutComponent implements OnInit {
         { label: 'قائمة الطلاب', route: '/dashboard/students/list-students' }
       ]
     },
-    { label: 'الاشتراكات', icon: Icons['enrollment'], route: '/users' },
+    { label: 'الاشتراكات', icon: Icons['enrollment'], route: '', children:[
+      {label : 'تسجيل اشتراك جديد+', route: '/dashboard/enrollments/create' },
+      {label : 'قائمة الاشتراكات', route: '/dashboard/enrollments/list' }
+    ] },
+    { label: 'المحاضرات', icon: Icons['sessions'], route: '/dashboard/sessions/details' },
+
   ];
 
 

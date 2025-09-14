@@ -36,7 +36,7 @@
 
           <!-- المبلغ المدفوع -->
           <td class="px-4 py-3 text-[var(--text-secondary)]">
-            {{ student.paymentAmount }} ريال
+            {{ studentPayments[0]?.amount }} ريال
           </td>
 
           <!-- العمر -->
@@ -45,7 +45,7 @@
           <!-- الإجراءات -->
           <td class="px-4 py-3 text-center relative">
             <div class="flex justify-center items-center space-x-2 space-x-reverse">
-              <!-- زر الحذف -->
+              <!-- زر الحذف --
               <button
                 (click)="deletePayment(student.paymentId); $event.stopPropagation()"
                 class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded-lg text-sm"
@@ -103,7 +103,7 @@
   <!-- Add Modal -->
       <div *ngIf="showAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
         <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
-          <!-- Close Button -->
+          <!-- Close Button --
           <button (click)="closeAddModal()"
             class=" absolute top-2 right-2 text-gray-500 hover:text-red-700 cursor-pointer">
             <i class="fas fa-times"></i>
@@ -148,7 +148,7 @@
               class="px-3 py-1 text-sm rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors cursor-pointer">
               إلغاء
             </button>
-            <button 
+            <button
               class="px-3 py-1 text-sm rounded-md bg-[var(--gold-primary)] text-white hover:bg-[var(--gold-secondary)] transition-colors cursor-pointer">
               حفظ
             </button>

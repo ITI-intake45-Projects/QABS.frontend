@@ -206,17 +206,11 @@ previewUrl: string | ArrayBuffer | null = null;
 
       this.accountSrv.Register(formData).subscribe({
         next: (res) =>{
+        this.isLoading = false;
           console.log(res);
-          if(res.succeeded){
-            console.log(
-              `User "${formValue.FirstName + ' ' + formValue.LastName}" registered successfully.✅`
-            )
-          }
-          else{
-            console.log(
-              `User "${formValue.FirstName + ' ' + formValue.LastName}" registered Failed. ❌`
-            )
-          }
+          this.showToast(`تم إنشاء حساب المعلم "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`,
+              'success'
+            );
 
         }
           ,

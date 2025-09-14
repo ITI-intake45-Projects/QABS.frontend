@@ -1,4 +1,5 @@
 import { Gender } from "../Enums/Gender.enum";
+import { Enrollment } from "./Enrollment";
 import { StudentPayment } from "./StudentPayment";
 
 export interface Student {
@@ -11,4 +12,5 @@ export interface Student {
   dateCreated?: string;
   lastLoginDate?: string;
   studentpayments?: StudentPayment[];
+  // enrollments?: Enrollment[];
 }

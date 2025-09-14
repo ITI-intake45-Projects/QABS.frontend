@@ -33,6 +33,7 @@ export class StudentDetailsComponent implements OnInit {
         // Handle the response and display student details
         console.log(res.data);
         this.student = res.data;
+        this.studentPayments = res.data.studentPayments || [];
       },
       error: (err) => {
         console.error('Error fetching student details:', err);
@@ -71,7 +72,7 @@ export class StudentDetailsComponent implements OnInit {
 
 
   closeAddModal(){
-    
+
   }
 
 }

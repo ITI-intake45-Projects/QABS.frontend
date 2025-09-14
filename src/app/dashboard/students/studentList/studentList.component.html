@@ -1,5 +1,34 @@
 <div class="p-6 bg-[var(--background-primary)]" dir="rtl">
+   <!-- Loader يغطي الصفحة -->
+  <div
+    *ngIf="isLoading"
+    class="absolute inset-0 flex items-center justify-center bg-white/80 z-50"
+  >
+    <div class="text-center">
+      <div
+        class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[var(--green-primary)] border-t-transparent mb-3"
+      ></div>
+      <p class="text-[var(--text-secondary)] text-base font-medium">جارٍ تحميل الطلاب...</p>
+    </div>
+  </div>
   <h2 class="text-xl font-bold text-[var(--green-primary)] mb-4">قائمة الطلاب</h2>
+  <!-- شريط البحث -->
+  <div class="mb-4 flex gap-2 items-center">
+    <input type="text" [(ngModel)]="searchTerm" placeholder="ابحث باسم الطالب"
+      class="px-3 py-2 border rounded-lg w-64 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-primary)]" />
+
+    <button (click)="loadStudents()"
+      class="px-4 py-2 bg-[var(--green-primary)] text-white rounded-lg hover:bg-[var(--green-secondary)] cursor-pointer">
+      بحث
+    </button>
+
+    <!-- زرار إعادة تعيين البحث -->
+    <button *ngIf="searchTerm" (click)="resetSearch()"
+      class="px-3 py-2 bg-[var(--gray-light)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--gray-medium)] cursor-pointer">
+      إعادة تعيين
+    </button>
+  </div>
+
 
   <!-- الجدول -->
   <div class="overflow-x-auto rounded-lg shadow-md border border-[var(--gray-medium)] relative">
@@ -14,18 +43,12 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-[var(--gray-light)] bg-[var(--background-secondary)]">
-        <tr
-          *ngFor="let student of paginatedStudents; trackBy: trackByStudentId"
-          (click)="goToStudentDetails(student.studentId)"
-          class="hover:bg-[var(--gray-light)] transition cursor-pointer"
-        >
+        <tr *ngFor="let student of students; trackBy: trackByStudentId" (click)="goToStudentDetails(student.studentId)"
+          class="hover:bg-[var(--gray-light)] transition cursor-pointer">
           <!-- صورة -->
           <td class="px-4 py-3">
-            <img
-              [src]="student.profileImg || 'assets/images/default-profile.png'"
-              alt="صورة الطالب"
-              class="w-10 h-10 rounded-full border border-[var(--gray-medium)] object-cover"
-            />
+            <img [src]="student.profileImg || 'assets/images/default-img.jpg'" alt="صورة الطالب"
+              class="w-10 h-10 rounded-full border border-[var(--gray-medium)] object-cover" />
           </td>
 
           <!-- الاسم -->
@@ -45,50 +68,43 @@
           <td class="px-4 py-3 text-center relative">
             <div class="flex justify-center items-center space-x-2 space-x-reverse">
               <!-- زر الحذف -->
-              <button
-                (click)="deleteStudent(student); $event.stopPropagation()"
-                class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded-lg text-sm"
-              >
+              <!-- زر الحذف -->
+              <button (click)="openDeleteModal(student, $event)"
+                class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded-lg text-sm">
                 حذف
               </button>
 
-             <!-- منيو 3 نقاط -->
-             <div class="relative" (click)="$event.stopPropagation()">
-              <button
-              class="p-2 rounded-full hover:bg-[var(--gray-light)]"
-              (click)="toggleMenu(student.studentId, $event)"
-            >
-              &#8942;
-            </button>
 
-              <!-- القائمة -->
-              <div
-              *ngIf="menuOpenFor === student.studentId"
-              class="fixed w-32 bg-white border border-[var(--gray-medium)] rounded-lg shadow-lg z-50"
-              [style.top.px]="menuPosition.y"
-              [style.left.px]="menuPosition.x"
-            >
-                <button
-                  (click)="viewStudent(student); closeMenu()"
-                  class="block w-full px-4 py-2 text-right text-sm text-[var(--text-primary)] hover:bg-[var(--gray-light)]"
-                >
-                  التفاصيل
+              <!-- منيو 3 نقاط -->
+              <div class="relative" (click)="$event.stopPropagation()">
+                <button class="p-2 rounded-full hover:bg-[var(--gray-light)]"
+                  (click)="toggleMenu(student.studentId, $event)">
+                  &#8942;
                 </button>
-                <button
-                  (click)="deleteStudent(student); closeMenu()"
-                  class="block w-full px-4 py-2 text-right text-sm text-red-600 hover:bg-[var(--gray-light)]"
-                >
-                  حذف
-                </button>
+
+                <!-- القائمة -->
+                <div *ngIf="menuOpenFor === student.studentId"
+                  class="fixed w-32 bg-white border border-[var(--gray-medium)] rounded-lg shadow-lg z-50"
+                  [style.top.px]="menuPosition.y" [style.left.px]="menuPosition.x">
+                  <button (click)="viewStudent(student); closeMenu()"
+                    class="block w-full px-4 py-2 text-right text-sm text-[var(--text-primary)] hover:bg-[var(--gray-light)]">
+                    التفاصيل
+                  </button>
+                  <!-- زر الحذف -->
+                  <button (click)="openDeleteModal(student, $event)"
+                    class="block w-full px-4 py-2 text-right text-sm text-red-600 hover:bg-[var(--gray-light)]">
+                    حذف
+                  </button>
+
+                </div>
               </div>
-            </div>
 
             </div>
           </td>
         </tr>
 
         <!-- في حالة عدم وجود طلاب -->
-        <tr *ngIf="paginatedStudents.length === 0">
+        <tr *ngIf="students.length === 0">
           <td colspan="5" class="px-4 py-6 text-center text-[var(--text-secondary)]">
             لا يوجد طلاب حاليًا.
           </td>
@@ -97,26 +113,88 @@
     </table>
   </div>
 
-  <!-- الباجينيشن -->
-  <div class="flex justify-between items-center mt-4">
-    <button
-      (click)="prevPage()"
-      [disabled]="currentPage === 1"
-      class="px-4 py-2 rounded-lg bg-[var(--green-primary)] text-white hover:bg-[var(--green-dark)] disabled:opacity-50"
-    >
-      السابق
-    </button>
 
-    <span class="text-[var(--text-primary)] font-medium">
-      صفحة {{ currentPage }} من {{ totalPages }}
-    </span>
+  <div dir="rtl" class="bg-[var(--background-primary)] shadow-sm mt-6 px-6 py-4 rounded-lg">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
 
-    <button
-      (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
-      class="px-4 py-2 rounded-lg bg-[var(--green-primary)] text-white hover:bg-[var(--green-dark)] disabled:opacity-50"
-    >
-      التالي
-    </button>
+      <!-- أزرار التحكم -->
+      <div class="flex items-center gap-2">
+        <!-- الأول -->
+        <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+          class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- السابق -->
+        <button (click)="previousPage()" [disabled]="currentPage === 1"
+          class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- الصفحات -->
+        <div class="flex items-center gap-1">
+          <button *ngFor="let page of getVisiblePages()" (click)="goToPage(page)"
+            [class.bg-[var(--green-primary)]]="page === currentPage" [class.text-white]="page === currentPage"
+            class="w-8 h-8 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 text-sm font-medium transition-colors text-[var(--text-primary)]">
+            {{ page }}
+          </button>
+        </div>
+
+        <!-- التالي -->
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+          class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <!-- الأخير -->
+        <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+          class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7">
+            </path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- النص -->
+      <div class="text-sm text-[var(--text-secondary)]">
+        عرض {{ getShowingRange() }} من أصل {{ totalCount }} طالب
+      </div>
+
+    </div>
   </div>
+
+
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="showDeleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6" dir="rtl">
+      <h3 class="text-lg font-bold text-[var(--text-primary)] mb-4">تأكيد الحذف</h3>
+      <p class="text-[var(--text-secondary)] mb-6">
+        هل أنت متأكد أنك تريد حذف الطالب
+        <span class="font-semibold text-[var(--green-primary)]">
+          {{ studentToDelete?.firstName }} {{ studentToDelete?.lastName }}
+        </span>؟
+      </p>
+
+      <div class="flex justify-end gap-3">
+        <button (click)="cancelDelete()"
+          class="px-4 py-2 rounded-lg border border-[var(--gray-medium)] text-[var(--text-primary)] hover:bg-[var(--gray-light)]">
+          إلغاء
+        </button>
+        <button (click)="confirmDelete()"
+          class="px-4 py-2 rounded-lg bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white">
+          حذف
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 </div>

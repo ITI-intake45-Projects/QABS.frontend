@@ -5,9 +5,9 @@
 
       <!-- Toast message -->
       <div *ngIf="showMessage" [ngClass]="{
-           'bg-green-500': messageType==='success',
+           'bg-[var(--green-dark)]': messageType==='success',
            'bg-red-500': messageType==='error'
-         }" class="text-white z-10 px-4 py-2 rounded-md absolute top-50 left-1/2 transform -translate-x-1/2 shadow-lg">
+         }" class="text-white text-2xl z-10 px-4 py-2 rounded-md absolute top-50 left-1/2 transform -translate-x-1/2 shadow-lg">
         {{ message }}
       </div>
 
@@ -16,15 +16,15 @@
 
       <!-- Welcome text -->
       <h1 class="text-2xl font-bold text-[var(--green-dark)] text-center flex items-center justify-center gap-2">
-        <i class="fa-solid fa-user text-[var(--gold-primary)]"></i>
-        إنشاء حساب جديد
+        <i class="fa-solid fa-chalkboard-teacher text-[var(--gold-primary)]"></i>
+        إنشاء معلم جديد
       </h1>
-      <p class="text-[var(--text-secondary)] text-center mt-2">
+      <!-- <p class="text-[var(--text-secondary)] text-center mt-2">
         لديك حساب بالفعل؟
         <a class="text-[var(--gold-primary)] hover:text-[var(--gold-secondary)] font-medium">
           سجّل دخولك
         </a>
-      </p>
+      </p> -->
     </div>
 
     <form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="max-w-lg mx-auto space-y-5 bg-white mb-10   ">

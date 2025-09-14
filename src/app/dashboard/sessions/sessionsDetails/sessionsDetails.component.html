@@ -1,0 +1,222 @@
+<div class="p-6 md:p-10 lg:p-12 min-h-screen bg-[var(--background-secondary)] text-[var(--text-primary)]">
+
+  <!-- Page Title -->
+  <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-1 text-[var(--text-primary)]">
+    جدول الحصص
+  </h1>
+  <!-- Display selected date prominently -->
+  <h3 class="text-xl md:text-2xl font-semibold text-center mb-8 text-[var(--text-secondary)]">
+    للتاريخ: {{ (startDate || today) | date:'longDate':'':'ar-EG' }}
+  </h3>
+
+  <!-- Filter Section -->
+  <div
+    class="flex w-full md:flex-row items-center justify-end gap-4 mb-6 p-4 bg-white rounded-xl shadow-md border border-[var(--gray-light)]">
+
+    <label for="date-filter" class="text-sm md:text-base font-semibold text-[var(--text-secondary)] whitespace-nowrap">
+      فلترة حسب التاريخ:
+    </label>
+
+    <!-- هنا خليت الـ input يتمدد وياخد كل المساحة -->
+    <input type="date" id="date-filter" [(ngModel)]="startDate"
+      class="flex-1 border border-[var(--gray-medium)] rounded-xl px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--green-primary)] transition-all duration-300" />
+
+    <!-- زر تطبيق -->
+    <button (click)="applyFilter()"
+      class="bg-[var(--green-primary)] hover:bg-[var(--green-dark)] text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-colors duration-300 cursor-pointer">
+      تطبيق
+    </button>
+
+    <!-- زر مسح -->
+    <button (click)="clearFilter()"
+      class="bg-[var(--gray-dark)] hover:bg-[var(--green-dark)] text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-colors duration-300 cursor-pointer">
+      تاريخ اليوم
+    </button>
+  </div>
+
+
+<!-- Table Section -->
+<div class="max-w-8xl mx-auto min-h-[300px] flex items-center justify-center" *ngIf="isLoading">
+  <div class="text-center">
+    <div
+      class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-[var(--green-primary)] border-t-transparent mb-4">
+    </div>
+    <p class="text-[var(--text-secondary)] text-lg font-medium">جارٍ تحميل البيانات...</p>
+  </div>
+</div>
+
+
+  <div class=" mx-auto" *ngIf="!isLoading">
+
+
+    <!-- Sessions Table -->
+    <div class="bg-[var(--background-primary)] rounded-2xl shadow-xl overflow-hidden border border-[var(--gray-medium)]"
+      *ngIf="sessions.length > 0">
+      <div class="max-h-[70vh] overflow-y-auto">
+        <table class="w-full border-collapse">
+          <thead class="sticky top-0 z-10 bg-[var(--green-secondary)] text-white shadow-sm">
+            <tr>
+              <th class="px-4 md:px-6 py-4 text-center font-bold text-sm md:text-base">#</th>
+              <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">الطالب</th>
+              <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">المعلم</th>
+              <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">موعد الحصة</th>
+              <th class="px-4 md:px-6 py-4 text-center font-bold text-sm md:text-base">الحالة</th>
+              <th class="px-4 md:px-6 py-4 text-center font-bold text-sm md:text-base">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let session of sessions; let i = index"
+              class="border-b last:border-b-0 border-[var(--gray-light)] transition-colors duration-200" [ngClass]="{
+      'bg-red-200': session.status === SessionStatus.Cancelled,
+      'bg-white hover:bg-[var(--background-secondary)]': session.status !== SessionStatus.Cancelled
+    }">
+
+
+
+              <!-- Index -->
+              <td class="px-4 md:px-6 py-4 text-center align-middle">
+                <span
+                  class="bg-[var(--gold-primary)] text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm md:text-base">
+                  {{ i + 1 }}
+                </span>
+              </td>
+
+              <!-- Student -->
+              <td class="px-4 md:px-6 py-4 align-middle">
+                <div class="flex items-center gap-3">
+                  <img [src]="session.studentImg" [alt]="session.studentName"
+                    class="w-12 h-12 rounded-full object-cover border-2 border-[var(--green-primary)] shadow-md" />
+                  <span class="font-semibold text-sm md:text-base">{{ session.studentName }}</span>
+                </div>
+              </td>
+
+              <!-- Teacher -->
+              <td class="px-4 md:px-6 py-4 align-middle">
+                <div class="flex items-center gap-3">
+                  <img [src]="session.teacherImg" [alt]="session.teacherName"
+                    class="w-12 h-12 rounded-full object-cover border-2 border-[var(--green-primary)] shadow-md" />
+                  <span class="font-semibold text-sm md:text-base">{{ session.teacherName }}</span>
+                </div>
+              </td>
+
+              <!-- Date & Time -->
+              <td class="px-4 md:px-6 py-4 align-middle">
+                <div class="flex flex-col">
+                  <!-- <span class="font-semibold text-sm md:text-base">{{ session.startTime | date:'fullDate':'':'ar-EG'
+                    }}</span> -->
+                  <span class="text-xl text-[var(--text-secondary)] mt-1">
+                    {{ session.startTime | date:'shortTime':'':'ar-EG' }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td class="px-4 md:px-6 py-4 text-center align-middle">
+                <span class="px-4 py-1 rounded-xs text-sm font-semibold" [ngClass]="{
+                            'bg-blue-100 text-blue-600': session.status === 1,
+                            'bg-green-100 text-green-600': session.status === 2,
+                            'bg-red-100 text-red-600': session.status === 3,
+                            'bg-yellow-100 text-yellow-600': session.status === 4
+                          }">
+                  {{ getSessionStatusLabel(session.status ?? 1) }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-4 md:px-6 py-4 text-center align-middle">
+                <button *ngIf="session.status != 3"
+                  class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors duration-300 shadow-md cursor-pointer"
+                  (click)="openModal(session)">
+                  إلغاء
+
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div dir="rtl" class="bg-[var(--background-primary)] shadow-sm mt-6 px-6 py-4 rounded-lg"
+      *ngIf="sessions.length > 0">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+
+        <!-- أزرار التحكم -->
+        <div class="flex items-center gap-2">
+          <!-- الأول -->
+          <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7">
+              </path>
+            </svg>
+          </button>
+
+          <!-- السابق -->
+          <button (click)="previousPage()" [disabled]="currentPage === 1"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+
+          <!-- الصفحات -->
+          <div class="flex items-center gap-1">
+            <button *ngFor="let page of getVisiblePages()" (click)="goToPage(page)"
+              [class.bg-[var(--green-primary)]]="page === currentPage" [class.text-white]="page === currentPage"
+              class="w-8 h-8 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 text-sm font-medium transition-colors text-[var(--text-primary)]">
+              {{ page }}
+            </button>
+          </div>
+
+          <!-- التالي -->
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+
+          <!-- الأخير -->
+          <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7">
+              </path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- النص -->
+        <div class="text-sm text-[var(--text-secondary)]">
+          عرض {{ getShowingRange() }} من أصل {{ totalCount }} من المحاضرات
+        </div>
+
+      </div>
+    </div>
+
+    <!-- No Data Message -->
+    <div *ngIf="sessions.length === 0"
+      class="text-center text-[var(--text-secondary)] text-lg md:text-xl font-medium mt-10 p-6 rounded-xl border-dashed border-2 border-[var(--gray-medium)] bg-[var(--background-primary)] shadow-sm">
+      لا توجد حصص لعرضها بتاريخ {{ startDate | date:'longDate':'':'ar-EG' }}
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div *ngIf="showConfirmModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
+    <h2 class="text-lg font-bold mb-4">تأكيد الإلغاء</h2>
+    <p class="mb-6">هل أنت متأكد أنك تريد إلغاء هذه الحصة؟</p>
+    <div class="flex justify-center gap-4">
+      <button (click)="confirmCancel()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow">
+        نعم، إلغاء
+      </button>
+      <button (click)="closeModal()" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-lg shadow">
+        تراجع
+      </button>
+    </div>
+  </div>
+</div>

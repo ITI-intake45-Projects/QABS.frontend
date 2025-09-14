@@ -8,6 +8,10 @@ import { TeacherListComponent } from './teachers/teacherList/teacherList.compone
 import { CoreLayoutComponent } from '../core/coreLayout/coreLayout.component';
 import { StudentListComponent } from './students/studentList/studentList.component';
 import { StudentDetailsComponent } from './students/studentDetails/studentDetails.component';
+import { EnrollmentCreateComponent } from './enrollments/enrollmentCreate/enrollmentCreate.component';
+import { EnrollmentListComponent } from './enrollments/enrollmentList/enrollmentList.component';
+import { EnrollmentDetailsComponent } from './enrollments/enrollmentDetails/enrollmentDetails.component';
+import { SessionsDetailsComponent } from './sessions/sessionsDetails/sessionsDetails.component';
 
 
 // const routes: Routes = [
@@ -37,7 +41,22 @@ const routes: Routes = [
           { path: 'register-teacher', component: TeacherRegisterComponent },
           { path: 'list-teachers', component: TeacherListComponent }
         ]
+      },
+      {
+        path: 'enrollments', children: [
+          { path: 'create', component: EnrollmentCreateComponent },
+          { path: 'list', component: EnrollmentListComponent },
+          {path: 'details/:id' , component: EnrollmentDetailsComponent}
+        ]
+      },
+      {
+          path: 'sessions', children: [
+          { path: 'details', component: SessionsDetailsComponent },
+
+        ]
       }
+
+
 
     ]
   },

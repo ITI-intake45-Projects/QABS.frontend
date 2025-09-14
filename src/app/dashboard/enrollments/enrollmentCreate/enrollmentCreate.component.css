@@ -1,0 +1,22 @@
+select option {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+}
+
+select option:checked {
+  background-color: var(--gold-primary);
+  color: var(--background-primary);
+}
+
+select option:hover {
+  background-color: var(--gold-secondary);
+  color: var(--background-primary);
+}
+
+input[type="time"] {
+  font-family: "Tahoma", "Arial", sans-serif;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  font-variant-numeric: normal;
+}
+

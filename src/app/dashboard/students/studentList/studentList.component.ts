@@ -3,6 +3,7 @@ import { Student } from '../../../core/models/Details/Student';
 import { StudentService } from '../../../core/services/student.service';
 import { Gender } from '../../../core/models/Enums/Gender.enum';
 import { Router } from '@angular/router';
+import { AccountService } from '../../../core/services/Account.service';
 
 @Component({
   selector: 'app-studentList',
@@ -14,7 +15,10 @@ export class StudentListComponent implements OnInit {
 
   students: Student[] = [];
   currentPage = 1;
-  pageSize = 1;
+  pageSize = 10;
+  totalPages: number = 0;
+  totalCount: number = 0;
+  searchTerm: string = '';
 
   genders = [
     { id: Gender.Male, label: 'ذكر' },
@@ -26,7 +30,11 @@ export class StudentListComponent implements OnInit {
   showViewModal = false;
   showEditModal = false;
 
-  constructor(private studentService: StudentService , private router: Router) { }
+  constructor(
+    private studentService: StudentService,
+    private router: Router,
+    private accountService: AccountService
+  ) { }
 
   ngOnInit() {
     this.loadStudents();
@@ -53,37 +61,35 @@ export class StudentListComponent implements OnInit {
     this.menuOpenFor = null;
   }
 
-  // load all students
+  // load all students (paged)
   loadStudents() {
-    this.studentService.getStudents().subscribe({
-      next: (res) => {
-        // this.isLoading = false;
-        // console.log(res);
-        console.log(res.data);
-        this.students = res.data.data;
-        // this.showToast(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`,
-        //     'success'
-        //   );
-        // if (res.succeeded) {
-        //   console.log(`تم إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" بنجاح ✅`)
-        // }
-        // else {
-        //   console.log(`للأسف فشل إنشاء حساب الطالب "${formValue.FirstName + ' ' + formValue.LastName}" ❌`)
-        // }
+    this.isLoading = true;
+    console.log('cuurent page: ', this.currentPage)
 
-      }
-      ,
+    this.studentService.getStudents(this.currentPage, this.pageSize, this.searchTerm).subscribe({
+      next: (res) => {
+        console.log(res.data);
+
+        this.students = res.data.data;              // تمام
+        this.currentPage = res.data.pageNumber;     // بدل currentIndex
+        this.pageSize = res.data.pageSize;          // تمام
+        this.totalCount = res.data.totalCount;      // تمام
+        this.totalPages = Math.ceil(this.totalCount / this.pageSize);
+        this.isLoading = false;
+
+      },
       error: (err) => {
-        // this.isLoading = false;
-        // this.showToast('حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى',
-        //     'error'
-        //   );
-        //   console.error('Error Registering User', err);
         console.log(err.message);
+        this.isLoading = false;
+
       }
     });
   }
 
+  resetSearch() {
+    this.searchTerm = '';
+    this.loadStudents();
+  }
   goToStudentDetails(studentId: string) {
     // Navigate to the student details page
     // Assuming you have a router set up
@@ -92,14 +98,14 @@ export class StudentListComponent implements OnInit {
   }
 
   // pagination
-  get totalPages(): number {
-    return Math.ceil(this.students.length / this.pageSize);
-  }
+  // get totalPages(): number {
+  //   return Math.ceil(this.students.length / this.pageSize);
+  // }
 
-  get paginatedStudents(): Student[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.students.slice(startIndex, startIndex + this.pageSize);
-  }
+  // get paginatedStudents(): Student[] {
+  //   const startIndex = (this.currentPage - 1) * this.pageSize;
+  //   return this.students.slice(startIndex, startIndex + this.pageSize);
+  // }
 
   // trackBy for ngFor
   trackByStudentId(index: number, student: Student): string {
@@ -126,18 +132,90 @@ export class StudentListComponent implements OnInit {
     this.showEditModal = false;
   }
 
-  deleteStudent(student: Student) {
-    if (confirm(`Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
-      this.students = this.students.filter(s => s.studentId !== student.studentId);
+  // deleteStudent(student: Student) {
+  //   if (confirm(`Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
+  //     this.students = this.students.filter(s => s.studentId !== student.studentId);
+  //   }
+  // }
+
+
+
+  // modal delete state
+  showDeleteModal = false;
+  studentToDelete?: Student;
+  isLoading = false;
+
+  openDeleteModal(student: Student, event: MouseEvent) {
+    event.stopPropagation(); // عشان مايفتحش تفاصيل الطالب
+    this.studentToDelete = student;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete() {
+    if (this.studentToDelete) {
+      this.isLoading = true
+      // this.students = this.students.filter(s => s.studentId !== this.studentToDelete!.studentId);
+      this.accountService.DeleteAccount(this.studentToDelete.studentId).subscribe({
+        next: (res) => {
+
+          this.loadStudents();
+        },
+        error: (err) => {
+          console.log(err.message);
+          this.isLoading = false;
+
+        }
+      });
+      this.studentToDelete = undefined;
+      this.showDeleteModal = false;
     }
   }
 
-  // pagination control
-  nextPage() {
-    if (this.currentPage < this.totalPages) this.currentPage++;
+  cancelDelete() {
+    this.studentToDelete = undefined;
+    this.showDeleteModal = false;
   }
 
-  prevPage() {
-    if (this.currentPage > 1) this.currentPage--;
+
+
+  // pagination control
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadStudents();
+    }
   }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadStudents();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadStudents();
+    }
+  }
+
+  getVisiblePages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // showing range text
+  getShowingRange(): string {
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(start + this.pageSize - 1, this.totalCount);
+    return `${start}-${end}`;
+  }
+
+
+
+
 }

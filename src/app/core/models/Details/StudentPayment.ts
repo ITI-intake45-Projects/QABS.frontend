@@ -1,5 +1,5 @@
 export interface StudentPayment {
-    paymentId: string;
+  paymentId: string;
   amount: number;
   date: string;
   status: string;

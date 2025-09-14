@@ -1,0 +1,242 @@
+<div *ngIf="!isLoading && enrollment" class=" mx-auto p-6  ">
+
+
+  <!-- Student Information Cards -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div
+      class="bg-[var(--background-secondary)] rounded-xl p-6 border border-[var(--gray-medium)] shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="flex items-center gap-4">
+        <div class="bg-[var(--green-primary)] p-1 rounded-full flex items-center justify-center">
+          <img [src]="enrollment.studentImg" alt="Student" class="w-12 h-12 rounded-full object-cover" />
+        </div>
+        <div>
+          <p class="text-[var(--text-secondary)] text-sm font-medium">الطالب</p>
+          <p class="text-[var(--text-primary)] text-xl font-bold">{{ enrollment.studentName }}</p>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div
+      class="bg-[var(--background-secondary)] rounded-xl p-6 border border-[var(--gray-medium)] shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="flex items-center gap-4">
+        <div class="bg-[var(--gold-primary)] p-1 rounded-full flex items-center justify-center">
+          <img [src]="enrollment.teacherImg" alt="Teacher" class="w-12 h-12 rounded-full object-cover" />
+        </div>
+
+        <div>
+          <p class="text-[var(--text-secondary)] text-sm font-medium">المدرس</p>
+          <p class="text-[var(--text-primary)] text-xl font-bold">{{ enrollment.teacherName }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-[var(--background-secondary)] rounded-xl p-6 border border-[var(--gray-medium)] shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="flex items-center gap-4">
+        <div class="bg-[var(--green-secondary)] p-3 rounded-full">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+            </path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-[var(--text-secondary)] text-sm font-medium">عدد الحصص الكلي</p>
+          <p class="text-[var(--text-primary)] text-2xl font-bold">{{ enrollment.totalSessions }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-[var(--background-secondary)] rounded-xl p-6 border border-[var(--gray-medium)] shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="flex items-center gap-4">
+        <div class="bg-[var(--gold-secondary)] p-3 rounded-full">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-[var(--text-secondary)] text-sm font-medium">الحصص المتبقية</p>
+          <p class=" text-2xl font-bold">{{ remainingSessions }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sessions Table -->
+  <div class="bg-[var(--background-secondary)] rounded-xl shadow-lg  border border-[var(--gray-medium)]">
+    <!-- Sessions Header with Create Button -->
+    <div
+      class="flex items-center justify-between bg-gradient-to-r from-[var(--green-darker)] to-[var(--green-dark)] px-6 py-4">
+      <h3 class="text-xl font-bold text-[var(--gray-dark)] flex items-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        جدول الحصص
+      </h3>
+
+      <!-- زر إنشاء حصة جديدة -->
+      <button (click)="openCreateSessionModal()"
+        class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        إنشاء حصة جديدة
+      </button>
+    </div>
+
+
+
+
+    <div class="max-h-[70vh] overflow-y-auto  rounded-lg">
+      <table class="w-full border-collapse">
+        <thead class="bg-gray-100 sticky top-0 z-10">
+          <tr>
+            <th
+              class="px-6 py-4 text-2xl text-right text-[var(--text-primary)] font-bold border-b border-[var(--gray-medium)]">
+              #</th>
+            <th
+              class="px-6 py-4 text-2xl text-right text-[var(--text-primary)] font-bold border-b border-[var(--gray-medium)]">
+              تاريخ الحصة</th>
+            <th
+              class="px-6 py-4 text-2xl text-right text-[var(--text-primary)] font-bold border-b border-[var(--gray-medium)]">
+              المبلغ</th>
+            <th
+              class="px-6 py-4 text-2xl text-right text-[var(--text-primary)] font-bold border-b border-[var(--gray-medium)]">
+              الحالة</th>
+            <th
+              class="px-6 py-4 text-2xl text-center text-[var(--text-primary)] font-bold border-b border-[var(--gray-medium)]">
+              الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--gray-medium)] ">
+          <tr *ngFor="let session of enrollment.sessions; let i = index"
+            class="border-b last:border-b-0 border-[var(--gray-light)] transition-colors duration-200" [ngClass]="{
+      'bg-red-200': session.status === SessionStatus.Cancelled,
+      'bg-white hover:bg-[var(--background-secondary)]': session.status !== SessionStatus.Cancelled
+    }">
+            <td class="px-6 py-4 text-[var(--text-primary)] font-semibold">
+              <span
+                class="bg-[var(--green-primary)] text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                {{ i + 1 }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-[var(--text-primary)]">
+              <div class="flex flex-col">
+                <span class="font-semibold text-lg">{{ session.startTime | date:'fullDate':'':'ar-EG' }}</span>
+                <span class="text-[var(--text-secondary)] text-sm">{{ session.startTime | date:'shortTime':'':'ar-EG'
+                  }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-[var(--gold-primary)] font-bold text-lg">
+                {{ session.amount | number:'1.2-2' }} ج.م
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 rounded-sm text-sm font-semibold" [ngClass]="{
+                    'bg-blue-100 text-blue-600': session.status === 1,
+                    'bg-green-100 text-green-600': session.status === 2,
+                    'bg-red-100 text-red-600': session.status === 3,
+                    'bg-yellow-100 text-yellow-600': session.status === 4
+                  }">
+                {{ getSessionStatusLabel(session.status ?? 1) }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex justify-center gap-2">
+                <!-- (click)="editSession(session)" -->
+            <td class="px-4 md:px-6 py-4 text-center align-middle">
+              <button *ngIf="session.status != 3"
+                class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors duration-300 shadow-md cursor-pointer"
+                (click)="openModal(session)">
+                إلغاء
+
+              </button>
+            </td>
+    </div>
+    </td>
+    </tr>
+    </tbody>
+    <tfoot class="bg-gradient-to-r from-[var(--green-primary)] to-[var(--green-secondary)] text-white">
+      <tr>
+        <td colspan="3" class="px-6 py-4 text-[var(--gray-dark)] text-right font-bold text-lg">إجمالي الحصص</td>
+        <td colspan="2" class="px-6 py-4 font-bold text-lg">
+          <span class="bg-white text-[var(--green-primary)] px-3 py-1 rounded-full">
+            {{ enrollment.sessions?.length }} / {{ enrollment.totalSessions }}
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3"
+          class="px-6 py-4 text-[var(--gray-dark)] text-right font-bold text-lg border-t border-green-600">الحصص
+          المتبقية</td>
+        <td colspan="2" class="px-6 py-4 font-bold text-lg border-t border-green-600">
+          <span class="bg-[var(--gold-primary)] text-white px-3 py-1 rounded-full">
+            {{ remainingSessions}}
+          </span>
+        </td>
+      </tr>
+    </tfoot>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="isLoading" class="flex items-center justify-center h-screen bg-[var(--background-primary)]">
+  <div class="text-center">
+    <div
+      class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-[var(--green-primary)] border-t-transparent mb-4">
+    </div>
+    <p class="text-[var(--text-secondary)] text-lg font-medium">جارٍ تحميل البيانات...</p>
+  </div>
+</div>
+
+<!-- Modal for creating new session -->
+<div *ngIf="showModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div
+    class="bg-[var(--background-secondary)] rounded-xl shadow-2xl p-8 max-w-lg w-full transform transition-all duration-300 scale-95 opacity-0"
+    [ngClass]="{'scale-100 opacity-100': showModal}">
+    <h3 class="text-2xl font-bold mb-4 text-center text-[var(--text-primary)]">إنشاء حصة جديدة</h3>
+    <form (ngSubmit)="createSession()">
+      <div class="mb-4">
+        <label for="startTime" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">تاريخ ووقت
+          الحصة</label>
+        <input type="datetime-local" id="startTime" name="startTime" [(ngModel)]="newSession.startTime"
+          class="w-full px-4 py-2 rounded-lg border border-[var(--gray-medium)] focus:outline-none focus:ring-2 focus:ring-[var(--green-primary)] transition-all duration-300">
+      </div>
+      <div class="flex justify-end gap-4 mt-6">
+        <button type="button" (click)="closeCreateSessionModal()"
+          class="bg-gray-300 hover:bg-gray-400 text-[var(--text-primary)] font-semibold py-2 px-6 rounded-lg transition-colors duration-300">
+          إلغاء
+        </button>
+        <button type="submit"
+          class="bg-[var(--green-primary)] hover:bg-[var(--green-dark)] text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-300">
+          إنشاء
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div *ngIf="showConfirmModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
+    <h2 class="text-lg font-bold mb-4">تأكيد الإلغاء</h2>
+    <p class="mb-6">هل أنت متأكد أنك تريد إلغاء هذه الحصة؟</p>
+    <div class="flex justify-center gap-4">
+      <button (click)="confirmCancel()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow">
+        نعم، إلغاء
+      </button>
+      <button (click)="closeModal()" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-lg shadow">
+        تراجع
+      </button>
+    </div>
+  </div>
+</div>

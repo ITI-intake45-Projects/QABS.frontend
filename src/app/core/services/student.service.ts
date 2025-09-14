@@ -11,16 +11,25 @@ export class StudentService {
 
 
 
-  private jsonUrl = 'assets/data/students.json';
+
 
   constructor(private http: HttpClient) {}
 
-  getStudents(): Observable<any> {
-    return this.http.get(`${env.baseApi}Student/GetAllStudents`);
-  }
+getStudents(page: number, pageSize: number, searchTerm:string): Observable<any> {
+  return this.http.get(`${env.baseApi}Student/SearchStudents?pageIndex=${page}&pageSize=${pageSize}&name=${searchTerm}`);
+}
+
+getStudentsNotpagination() : Observable<any>{
+  return this.http.get(`${env.baseApi}Student/GetAllStudents`);
+}
+getStudentList() : Observable<any>{
+  return this.http.get(`${env.baseApi}Student/GetAllStudentList`);
+}
+
 
   getStudentById(id: string): Observable<any> {
     return this.http.get(`${env.baseApi}Student/GetStudentById/${id}`);
   }
 
 }
+

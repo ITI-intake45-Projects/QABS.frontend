@@ -10,5 +10,7 @@ export const Icons: Record<string, string> = {
   enrollment: `<i class="fas fa-file-invoice-dollar fa-2x"></i>`,
   profile: `<i class="fas fa-user fa-2x"></i>`,
   settings: `<i class="fas fa-cog fa-2x"></i>`,
-  logout: `<i class="fas fa-sign-out-alt fa-2x"></i>`
+  logout: `<i class="fas fa-sign-out-alt fa-2x"></i>`,
+  sessions:`<i class="fas fa-book-open fa-2x"></i>
+`
 };

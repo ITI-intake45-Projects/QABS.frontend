@@ -9,7 +9,7 @@ import { env } from '../../Environment/env';
 })
 export class AccountService {
 
-constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   // Register
   Register(formdata: FormData): Observable<any> {
@@ -19,14 +19,18 @@ constructor(private http: HttpClient) { }
 
 
   //Login
-  Login(User:{UserNameOrEmail: string, Password: string} ): Observable<any> {
+  Login(User: { UserNameOrEmail: string, Password: string }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post(`${env.baseApi}Account/Login`, User,{ headers });
+    return this.http.post(`${env.baseApi}Account/Login`, User, { headers });
   }
 
   //Test
   Test(): Observable<any> {
     return this.http.get(`${env.baseApi}Enrollment/GetAllEnrollments`,);
+  }
+
+  DeleteAccount(id: string): Observable<any> {
+    return this.http.delete(`${env.baseApi}Account/DeleteAccount/${id}`);
   }
 }
