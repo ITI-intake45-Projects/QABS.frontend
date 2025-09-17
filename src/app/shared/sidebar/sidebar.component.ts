@@ -18,7 +18,7 @@ export interface SidebarItem {
 })
 export class SidebarComponent {
   @Input() items: SidebarItem[] = [];
-  @Input() collapsed = false;
+  @Input() collapsed = true;
 
   constructor(private sanitizer: DomSanitizer , private router: Router) { }
 

@@ -17,7 +17,7 @@ export class CoreLayoutComponent implements OnInit {
   collapsed = false;
 
   sidebarItems: SidebarItem[] = [
-    { label: 'لوحة التحكم', icon: Icons['dashboard'], route: '' },
+    { label: 'لوحة التحكم', icon: Icons['dashboard'], route: '/dashboard' },
     { label: 'المعلمين', icon: Icons['teachers'], route: '' , children: [
       { label: 'تسجيل معلم جديد+', route: '/dashboard/teachers/register-teacher' },
       { label: 'قائمة المعلمين', route: '/dashboard/teachers/list-teachers' }

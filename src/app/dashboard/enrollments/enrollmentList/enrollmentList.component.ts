@@ -12,7 +12,7 @@ import { TeacherService } from '../../../core/services/teacher.service';
 
 @Component({
   selector: 'app-enrollmentList',
-  templateUrl:'./enrollmentList.component.html',
+  templateUrl: './enrollmentList.component.html',
   styleUrls: ['./enrollmentList.component.css'],
   standalone: false
 })
@@ -20,18 +20,24 @@ export class EnrollmentListComponent implements OnInit {
 
   constructor(
     private enrollmentService: EnrollmentService,
-    private studentService : StudentService,
-    private teacherService : TeacherService,
+    private studentService: StudentService,
+    private teacherService: TeacherService,
     private router: Router
   ) { }
 
   isLoading = false;
   currentPage = 1;
-  pageSize = 4;
+  pageSize = 5;
   totalPages: number = 0;
   totalCount: number = 0;
+  selectedEnrollmentStatus: number | null = null;
+
 
   ngOnInit() {
+
+  const startYear = 2025;
+  const futureYears = 15; // عدد السنين اللي عايز تعرضها (غيره حسب احتياجك)
+  this.years = Array.from({ length: futureYears }, (_, i) => startYear + i);
     this.isLoading = true;
     this.loadStudents();
     this.loadTeachers();
@@ -40,9 +46,9 @@ export class EnrollmentListComponent implements OnInit {
   }
 
   enrollments: Enrollment[] = [];
-  studentId:string  = '';
-  teacherId:string = '';
-  startDate! : Date ;
+  studentId: string = '';
+  teacherId: string = '';
+  startDate!: Date;
 
 
 
@@ -54,8 +60,8 @@ export class EnrollmentListComponent implements OnInit {
   ];
   EnrollmentStatuses = [
     { id: 1, label: 'مفعل' },
-    { id: 2, label: 'ملغي' },
-    { id: 3, label: 'قيد الانتظار' },
+    { id: 2, label: 'مكتمل' },
+    { id: 3, label: 'ملغى' },
     { id: 0, label: 'غير معروف' }
   ];
 
@@ -67,26 +73,43 @@ export class EnrollmentListComponent implements OnInit {
   }
 
   loadEnrollments() {
-    // this.isLoading = true;
-      if (this.selectedStudent) {
-      this.studentId = this.selectedStudent.studentId;
+    this.isLoading = true;
 
+    let query: any = {
+      studentId: this.selectedStudent?.studentId || "",
+      teacherId: this.selectedTeacher?.teacherId || "",
+      status : this.selectedEnrollmentStatus || "" ,
+      pageSize: this.pageSize,
+      pageIndex: this.currentPage
+    };
+
+    // لو الشهر متحدد
+    if (this.selectedMonth) {
+      const year = this.selectedYear || new Date().getFullYear();
+
+      // نبعت السنة والشهر
+      query.startDate = `${year}-${this.selectedMonth}-01`;  // ندي default اليوم 1
+
+      // لو اليوم متحدد كمان
+      if (this.selectedDay) {
+        query.day = this.selectedDay;
+      }
     }
-     if ( this.selectedTeacher) {
 
-      this.teacherId = this.selectedTeacher.teacherId;
+    // فلترة بالحالة 👈
+    if (this.selectedEnrollmentStatus !== null) {
+      query.enrollmentStatus = this.selectedEnrollmentStatus;
     }
 
 
-
-    this.enrollmentService.getAllEnrollments(this.currentPage, this.pageSize, this.studentId, this.teacherId, this.startDate).subscribe({
+    this.enrollmentService.getAllEnrollments(query).subscribe({
       next: (res) => {
-        // Handle the response and display student details
         console.log(`Enrollment data:`, res.data);
         this.enrollments = res.data.data;
-        // this.loadStudents();
-        // this.loadTeachers();
-
+        this.currentPage = res.data.pageNumber;
+        this.pageSize = res.data.pageSize;
+        this.totalCount = res.data.totalCount;
+        this.totalPages = Math.ceil(this.totalCount / this.pageSize);
         this.isLoading = false;
       },
       error: (err) => {
@@ -94,10 +117,10 @@ export class EnrollmentListComponent implements OnInit {
         this.isLoading = false;
       }
     });
-
   }
 
-    loadStudents() {
+
+  loadStudents() {
     this.studentService.getStudentList().subscribe({
       next: (res) => {
         console.log('students : ', res.data);
@@ -110,7 +133,7 @@ export class EnrollmentListComponent implements OnInit {
     });
   }
 
-      loadTeachers() {
+  loadTeachers() {
     this.teacherService.getTeacherList().subscribe({
       next: (res) => {
         console.log('Teachers : ', res.data);
@@ -196,32 +219,81 @@ export class EnrollmentListComponent implements OnInit {
     console.log('TeacherId Selected:', teacher.teacherId); // هيتبعت للباك اند
   }
 
-  // استدعاء الباك اند بالقيم المختارة
-  searchByStudentAndTeacher() {
-    if (!this.selectedStudent || !this.selectedTeacher) {
-      console.warn('لازم تختار طالب ومعلم');
-      return;
-    }
-
-    const studentId = this.selectedStudent.studentId;
-    const teacherId = this.selectedTeacher.teacherId;
-
-    console.log('Sending to backend:', { studentId, teacherId });
-
-    // مثال استدعاء خدمة API
-    // this.enrollmentService.searchByStudentAndTeacher(studentId, teacherId).subscribe({
-    //   next: (res) => {
-    //     console.log('نتائج البحث:', res);
-    //   },
-    //   error: (err) => {
-    //     console.error('Error:', err);
-    //   }
-    // });
-  }
 
   clearSelections(): void {
     this.selectedStudent = null;
     this.selectedTeacher = null;
+    this.studentId = '';
+    this.teacherId = '';
+    this.selectedDay = null;
+    this.selectedMonth = null;
+    this.selectedYear = null;
+    this.selectedEnrollmentStatus = null; // 👈 هنا
+
   }
+
+
+  // pagination control
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadEnrollments();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadEnrollments();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadEnrollments();
+    }
+  }
+
+  getVisiblePages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // showing range text
+  getShowingRange(): string {
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(start + this.pageSize - 1, this.totalCount);
+    return `${start}-${end}`;
+  }
+
+
+  //filter
+
+  selectedMonth: number | null = null;
+  selectedYear: number | null = null;
+  selectedDay: number | null = null;
+
+  months = [
+    { value: 1, name: 'يناير' },
+    { value: 2, name: 'فبراير' },
+    { value: 3, name: 'مارس' },
+    { value: 4, name: 'أبريل' },
+    { value: 5, name: 'مايو' },
+    { value: 6, name: 'يونيو' },
+    { value: 7, name: 'يوليو' },
+    { value: 8, name: 'أغسطس' },
+    { value: 9, name: 'سبتمبر' },
+    { value: 10, name: 'أكتوبر' },
+    { value: 11, name: 'نوفمبر' },
+    { value: 12, name: 'ديسمبر' },
+  ];
+
+  years: number[] = [];
+
+
 
 }

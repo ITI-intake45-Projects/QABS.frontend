@@ -34,6 +34,7 @@ export class SessionsDetailsComponent implements OnInit {
 
     this.sessionService.getSessionsByStartDate(this.currentPage, this.pageSize, this.startDate).subscribe({
       next: (res) => {
+        console.log('Sessions data:', res);
         this.sessions = res.data.data;
         this.currentPage = res.data.pageNumber;
         this.pageSize = res.data.pageSize;

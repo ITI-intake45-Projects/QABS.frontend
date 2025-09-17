@@ -8,5 +8,6 @@ export interface Session {
   status?: SessionStatus;   // enum
   amount?: number;
   enrollmentId: number;
+  duration : number;
 
 }

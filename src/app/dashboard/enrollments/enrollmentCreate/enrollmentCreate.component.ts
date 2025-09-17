@@ -12,6 +12,7 @@ import { EnrollmentService } from '../../../core/services/enrollment.service';
 import { SubscriptionType } from '../../../core/models/Enums/SubscriptionType.enum';
 import { StudentList } from '../../../core/models/Details/StudentList';
 import { TeacherList } from '../../../core/models/Details/TeacherList';
+import { EnrollmentStatus } from '../../../core/models/Enums/EnrollmentStatus.enum';
 
 @Component({
   selector: 'app-enrollmentCreate',
@@ -65,13 +66,14 @@ export class EnrollmentCreateComponent implements OnInit {
       Specialization: [null, Validators.required],
       EnrollmentFee: [null, Validators.required],
       Discount: [null],
+      EnrollmentStatus: [EnrollmentStatus.Active],
       StartDate: ['', Validators.required],
       EndDate: [''],
       daysOfWeek: [[], Validators.required],   // جديد
       startTime: ['', Validators.required],
       studentPayment: this.fb.group({
         Amount: [null, [Validators.required, Validators.min(0.01)]],
-        PaymentDate: [new Date(), Validators.required],
+        PaymentDate: [new Date().toISOString(), Validators.required],
         ImageUrl: [''],
         StudentPaymentStatus: ['NotRecieved'],
         StudentId: [''],
@@ -187,9 +189,12 @@ export class EnrollmentCreateComponent implements OnInit {
 
   selectTeacher(teacher: TeacherList) {
     this.selectedTeacher = teacher;
-    this.enrollmentForm.get('TeacherId')?.setValue(teacher.teacherId);
+    console.log("Teacher object:", teacher); // ✅ بيعرض teacherId الصح
+
+    this.enrollmentForm.get('TeacherId')?.setValue(teacher.teacherId); // 👈 عدلتها
     this.teacherDropdownOpen = false;
   }
+
 
   // filteredStudents() {
   //   console.log(this.studentSearchTerm)
@@ -218,7 +223,7 @@ export class EnrollmentCreateComponent implements OnInit {
 
 
   loadTeachers() {
-    this.teacherService.getTeachers().subscribe({
+    this.teacherService.getTeacherList().subscribe({
       next: (res) => {
         console.log(res.data);
         this.teachers = res.data;
@@ -316,6 +321,8 @@ export class EnrollmentCreateComponent implements OnInit {
       formData.append('TeacherId', formValue.TeacherId);
       formData.append('SubscriptionPlanId', formValue.SubscriptionPlanId);
       formData.append('Specialization', formValue.Specialization);
+      formData.append('EnrollmentStatus', formValue.EnrollmentStatus);
+
       formData.append('EnrollmentFee', formValue.EnrollmentFee.toString());
 
       if (formValue.Discount) {
@@ -330,7 +337,10 @@ export class EnrollmentCreateComponent implements OnInit {
       // القيم الداخلية الخاصة بالـ studentPayment
       const payment = formValue.studentPayment;
       formData.append('studentPayment.Amount', payment.Amount.toString());
-      formData.append('studentPayment.PaymentDate', payment.PaymentDate);
+      if (payment.PaymentDate) {
+        const date = new Date(payment.PaymentDate);
+        formData.append('studentPayment.PaymentDate', date.toISOString());
+      }
       formData.append('studentPayment.StudentPaymentStatus', payment.StudentPaymentStatus);
       formData.append('studentPayment.StudentId', payment.StudentId);
       if (payment.EnrollmentId) {
@@ -358,6 +368,7 @@ export class EnrollmentCreateComponent implements OnInit {
       if (startTimeStr) {
         formData.append('StartTime', startTimeStr);
       }
+
       // ==========================================
 
       // call service
@@ -366,7 +377,21 @@ export class EnrollmentCreateComponent implements OnInit {
           console.log('Enrollment created:', res);
           this.showToast('تم تسجيل الاشتراك بنجاح ✅', 'success');
 
+          // Reset form + selections
           this.enrollmentForm.reset();
+          this.selectedStudent = null;
+          this.selectedTeacher = null;
+          this.selectedFile = null;
+          this.previewUrl = null;
+          this.enrollmentForm.patchValue({
+            studentPayment: {
+              StudentPaymentStatus: 'NotRecieved',
+              PaymentDate: new Date()
+            }
+          });
+
+
+
           this.isLoadingsubmit = false;
         },
         error: (err) => {

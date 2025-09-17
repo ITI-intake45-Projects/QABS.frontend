@@ -240,3 +240,16 @@
     </div>
   </div>
 </div>
+
+
+<!-- Toast message -->
+
+<div *ngIf="showMessage"
+     [ngClass]="{
+       'bg-[var(--green-dark)]': messageType==='success',
+       'bg-red-500': messageType==='error'
+     }"
+     class="text-white  z-10 px-4 py-3 rounded-md absolute top-20 left-1/2 transform -translate-x-1/2 shadow-lg text-2xl">
+  <div [innerHTML]="message"></div>
+</div>
+

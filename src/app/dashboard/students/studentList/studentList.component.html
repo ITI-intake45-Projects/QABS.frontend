@@ -6,7 +6,7 @@
   >
     <div class="text-center">
       <div
-        class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[var(--green-primary)] border-t-transparent mb-3"
+        class="inline-block animate-spin rounded-full h-20 w-20 border-4 border-[var(--green-primary)] border-t-transparent mb-3"
       ></div>
       <p class="text-[var(--text-secondary)] text-base font-medium">جارٍ تحميل الطلاب...</p>
     </div>
@@ -53,7 +53,7 @@
 
           <!-- الاسم -->
           <td class="px-4 py-3 text-[var(--text-primary)] font-medium">
-            {{ student.firstName }} {{ student.lastName }}
+            {{ student.fullName }}
           </td>
 
           <!-- النوع -->
@@ -67,22 +67,28 @@
           <!-- الإجراءات -->
           <td class="px-4 py-3 text-center relative">
             <div class="flex justify-center items-center space-x-2 space-x-reverse">
-              <!-- زر الحذف -->
+              <!-- زر التفاصيل -->
+
+              <button (click)="goToStudentDetails(student.studentId)"
+                class="bg-[var(--gold-primary)] hover:bg-[var(--green-primary)] text-white px-3 py-1 rounded-lg text-sm cursor-pointer">
+                التفاصيل
+              </button>
               <!-- زر الحذف -->
               <button (click)="openDeleteModal(student, $event)"
-                class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded-lg text-sm">
+                class="bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm cursor-pointer">
                 حذف
               </button>
 
 
+
               <!-- منيو 3 نقاط -->
-              <div class="relative" (click)="$event.stopPropagation()">
+              <!-- <div class="relative" (click)="$event.stopPropagation()">
                 <button class="p-2 rounded-full hover:bg-[var(--gray-light)]"
                   (click)="toggleMenu(student.studentId, $event)">
                   &#8942;
                 </button>
 
-                <!-- القائمة -->
+                <!-- القائمة --
                 <div *ngIf="menuOpenFor === student.studentId"
                   class="fixed w-32 bg-white border border-[var(--gray-medium)] rounded-lg shadow-lg z-50"
                   [style.top.px]="menuPosition.y" [style.left.px]="menuPosition.x">
@@ -90,16 +96,16 @@
                     class="block w-full px-4 py-2 text-right text-sm text-[var(--text-primary)] hover:bg-[var(--gray-light)]">
                     التفاصيل
                   </button>
-                  <!-- زر الحذف -->
+                  <!-- زر الحذف --
                   <button (click)="openDeleteModal(student, $event)"
                     class="block w-full px-4 py-2 text-right text-sm text-red-600 hover:bg-[var(--gray-light)]">
                     حذف
                   </button>
 
-                </div>
+                </div> -->
               </div>
 
-            </div>
+
           </td>
         </tr>
 
@@ -113,7 +119,7 @@
     </table>
   </div>
 
-
+<!-- pagination  -->
   <div dir="rtl" class="bg-[var(--background-primary)] shadow-sm mt-6 px-6 py-4 rounded-lg">
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
 
@@ -179,7 +185,7 @@
       <p class="text-[var(--text-secondary)] mb-6">
         هل أنت متأكد أنك تريد حذف الطالب
         <span class="font-semibold text-[var(--green-primary)]">
-          {{ studentToDelete?.firstName }} {{ studentToDelete?.lastName }}
+          {{ studentToDelete?.fullName }}
         </span>؟
       </p>
 
@@ -189,7 +195,7 @@
           إلغاء
         </button>
         <button (click)="confirmDelete()"
-          class="px-4 py-2 rounded-lg bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white">
+          class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white cursor-pointer">
           حذف
         </button>
       </div>

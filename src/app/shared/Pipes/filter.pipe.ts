@@ -10,8 +10,7 @@ export class FilterPipe implements PipeTransform {
 
     searchText = searchText.toLowerCase();
     return items.filter(it =>
-      (it.firstName+ '' + it.lastName).toLowerCase().includes(searchText)
+      (it.fullName || '').toLowerCase().includes(searchText) // 👈 هنا التعديل
     );
   }
 }
-

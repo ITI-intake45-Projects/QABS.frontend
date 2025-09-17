@@ -16,8 +16,8 @@ export class EnrollmentService {
 
     return this.http.post(`${env.baseApi}enrollment/CreateEnrollment`, formdata);
   }
-  getAllEnrollments(page: number, pageSize: number, studentId:string, teacherId:string, startTime:Date ): Observable<any> {
-    return this.http.get(`${env.baseApi}Enrollment/search?pageIndex=${page}&pageSize=${pageSize}&studentId=${studentId}&teacherId=${teacherId}&sortByDate${startTime}`);
+  getAllEnrollments(query:any ): Observable<any> {
+    return this.http.get(`${env.baseApi}Enrollment/search`,{ params: query });
   }
 
 //   getStudents(page: number, pageSize: number, searchTerm:string): Observable<any> {

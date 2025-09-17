@@ -1,6 +1,7 @@
 import { Gender } from "../Enums/Gender.enum";
 import { SpecializationType } from "../Enums/SpecializationType.enum";
 import { TeacherAvailability } from "./TeacherAvailability";
+import { TeacherPayout } from "./TeacherPayout";
 
 export interface Teacher {
   teacherId: string;
@@ -14,6 +15,7 @@ export interface Teacher {
   lastLoginDate?: string;
   specializations?: SpecializationType[];
   availability?: TeacherAvailability[];
+  payouts?:TeacherPayout[];
   enrollmentsCount : number
 
 }

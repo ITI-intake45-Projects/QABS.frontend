@@ -10,9 +10,10 @@
 
     <!-- Toast message -->
     <div *ngIf="showMessage" [ngClass]="{
-           'bg-[var(--green-dark)]': messageType==='success',
+           'bg-green-500': messageType==='success',
            'bg-red-500': messageType==='error'
-         }" class="text-white z-10 px-4 py-2 rounded-md absolute top-50 left-1/2 transform -translate-x-1/2 shadow-lg">
+         }"
+      class="text-white z-10 px-4 py-2 rounded-md absolute top-80 left-1/2 transform -translate-x-1/2 shadow-lg text-2xl">
       {{ message }}
     </div>
 
@@ -71,7 +72,7 @@
               <span>
                 <ng-container *ngIf="selectedTeacher; else noTeacher">
                   <img [src]="selectedTeacher.profileImg || 'assets/default-avatar.png'"
-                    class="w-6 h-6 rounded-full inline-block mr-2">
+                    class="w-6 h-6 rounded-full inline-block mr-2 object-center">
                   {{ selectedTeacher.fullName }}
                 </ng-container>
                 <ng-template #noTeacher>اختر المعلم</ng-template>
@@ -85,7 +86,7 @@
               <!-- Search Box -->
               <div class="p-2">
                 <input [(ngModel)]="teacherSearchTerm" type="text" placeholder="ابحث عن معلم..."
-                  class="w-full border rounded-lg px-3 py-1 text-sm outline-none"
+                  class="w-full border rounded-lg px-3 py-2 text-sm outline-none"
                   [ngModelOptions]="{standalone: true}" />
               </div>
 
@@ -93,7 +94,7 @@
               <div *ngFor="let t of teachers | filter:teacherSearchTerm" (click)="selectTeacher(t)"
                 class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
                 <img [src]="t.profileImg || 'assets/default-avatar.png'" class="w-8 h-8 rounded-full mr-2 object-cover">
-                {{ t.firstName }} {{ t.lastName }}
+                {{ t.fullName }}
               </div>
             </div>
           </div>
@@ -144,7 +145,7 @@
           <div *ngFor="let day of weekDays; let i = index">
             <label class="flex items-center space-x-2 cursor-pointer">
               <input type="checkbox" [value]="i" (change)="toggleDaySelection(i, $event)"
-                [checked]="enrollmentForm.value.daysOfWeek.includes(i)"
+                [checked]="(enrollmentForm.value.daysOfWeek || []).includes(i)"
                 class="h-4 w-4 text-[var(--gold-primary)] border-gray-300 rounded focus:ring-[var(--gold-primary)]" />
               <span>{{ day }}</span>
             </label>
@@ -153,21 +154,38 @@
       </div>
 
 
-      <!-- Start Time -->
-      <div>
-        <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">
-          وقت بداية الحصة <span class="text-red-500">*</span>
-        </label>
-        <input formControlName="startTime" type="time" class="w-full px-4 py-2 border rounded-lg shadow-sm
-                focus:ring-2 focus:ring-[var(--gold-primary)]
-                focus:border-[var(--gold-primary)]" />
-      </div>
+
 
       <!-- <mat-form-field appearance="outline">
   <mat-label>وقت بداية الحصة</mat-label>
   <input matInput [ngxTimepicker]="picker" formControlName="startTime" readonly>
   <ngx-material-timepicker #picker></ngx-material-timepicker>
 </mat-form-field> -->
+
+ <!-- Dates -->
+      <div class="grid md:grid-cols-2 md:gap-6">
+        <div>
+          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تاريخ البداية<span
+              class="text-red-500">*</span></label>
+          <input formControlName="StartDate" type="date"
+            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
+        </div>
+        <!-- <div>
+          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تاريخ الانتهاء</label>
+          <input formControlName="EndDate" type="date"
+            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
+        </div> -->
+
+        <!-- Start Time -->
+        <div>
+          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            وقت بداية الحصة <span class="text-red-500">*</span>
+          </label>
+          <input formControlName="startTime" type="time" class="w-full px-4 py-2 border rounded-lg shadow-sm
+                focus:ring-2 focus:ring-[var(--gold-primary)]
+                focus:border-[var(--gold-primary)]" />
+        </div>
+      </div>
 
 
 
@@ -180,26 +198,13 @@
             class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]">
         </div>
         <div>
-          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">الخصم</label>
+          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">الخصم %</label>
           <input formControlName="Discount" type="number"
             class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
         </div>
       </div>
 
-      <!-- Dates -->
-      <div class="grid md:grid-cols-2 md:gap-6">
-        <div>
-          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تاريخ البداية<span
-              class="text-red-500">*</span></label>
-          <input formControlName="StartDate" type="date"
-            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تاريخ الانتهاء</label>
-          <input formControlName="EndDate" type="date"
-            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
-        </div>
-      </div>
+
 
       <!-- Payment Section -->
       <div formGroupName="studentPayment" class="bg-gray-50 border p-4 rounded-lg shadow-sm space-y-4">
@@ -215,8 +220,7 @@
               class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تاريخ الدفع<span
-                class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تاريخ الدفع</label>
             <input formControlName="PaymentDate" type="date"
               class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
           </div>
@@ -243,8 +247,8 @@
       <!-- Submit -->
       <button type="submit" [disabled]="isLoadingsubmit"
         class="w-full h-12 bg-[var(--green-darker)] hover:bg-[var(--green-primary)] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-lg shadow-md flex items-center justify-center gap-2">
-        <ng-container *ngIf="!isLoading">تسجيل الاشتراك</ng-container>
-        <ng-container *ngIf="isLoading">
+        <ng-container *ngIf="!isLoadingsubmit">تسجيل الاشتراك</ng-container>
+        <ng-container *ngIf="isLoadingsubmit">
           <i class="fa-solid fa-spinner animate-spin"></i>
           <span>جاري التحميل...</span>
         </ng-container>

@@ -8,6 +8,7 @@ import { SessionService } from '../../../core/services/session.service';
 import { SessionEnrollmentDetailsVM } from '../../../core/models/Details/SessionEnrollmentDetailsVM';
 import { SessionEditVM } from '../../../core/models/Edit/SessionEditVM';
 import { Session } from '../../../core/models/Details/Session';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-enrollmentDetails',
@@ -23,7 +24,7 @@ export class EnrollmentDetailsComponent implements OnInit {
   enrollment!: Enrollment;
   SessionStatus = SessionStatus;
 
-    showModal = false;
+  showModal = false;
   newSession: SessionCreateVM = {
     startTime: new Date(),
     status: SessionStatus.Scheduled,
@@ -35,7 +36,8 @@ export class EnrollmentDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private enrollmentService: EnrollmentService,
-    private sessionService : SessionService
+    private sessionService: SessionService,
+    private datePipe: DatePipe
 
   ) { }
 
@@ -95,13 +97,31 @@ export class EnrollmentDetailsComponent implements OnInit {
       next: (res) => {
         console.log('Session created successfully:', res);
         // Optional: refresh the data
-        this.getEnrollmentById();
+        // صياغة التاريخ صح
+        const formattedDate = this.datePipe.transform(this.newSession.startTime, 'fullDate', '', 'ar');
+
+        const html = `
+  تم إنشاء حصة جديدة بتاريخ
+  <span class="toast-date">${formattedDate}</span>
+  بنجاح ✅
+  <br/>
+  <small class="toast-sub">سيتم تحديث البيانات خلال 3 ثوان ...</small>
+`;
+
+        this.showToast(html, 'success');
+
+        this.isLoading = false;
+        setTimeout(() => {
+          this.getEnrollmentById(); // أو location.reload();
+        }, 4000);
+
         // this.closeCreateSessionModal();
       },
       error: (err) => {
         console.error('Error creating session:', err);
         // Display error message to user
-        // this.isLoading = false;
+        this.showToast(`حدث خطأ أثناء إنشاء الحصة. الرجاء المحاولة مرة أخرى. ❌`, 'error');
+        this.isLoading = false;
       }
     });
 
@@ -119,55 +139,75 @@ export class EnrollmentDetailsComponent implements OnInit {
     this.sessionToCancel = undefined;
   }
 
-confirmCancel() {
-  if (!this.sessionToCancel) return;
+  confirmCancel() {
+    if (!this.sessionToCancel) return;
 
-  this.isLoading = true;
-  const editSession: SessionEditVM = {
-    Id: this.sessionToCancel.id,
-    StartTime: this.sessionToCancel.startTime,
-    SessionStatus: SessionStatus.Cancelled
-  };
+    this.isLoading = true;
+    const editSession: SessionEditVM = {
+      Id: this.sessionToCancel.id,
+      StartTime: this.sessionToCancel.startTime,
+      SessionStatus: SessionStatus.Cancelled
+    };
 
-  this.sessionService.CancelSession(editSession).subscribe({
-    next: (res) => {
-      console.log(res);
-      this.closeModal();
-      // this.currentPage = 1;
-      // this.loadSessions();
-      this.getEnrollmentById();
-    },
-    error: (err) => {
-      console.log(err.message);
-      this.isLoading = false;
-      this.closeModal();
-    }
-  });
-}
+    this.sessionService.CancelSession(editSession).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.closeModal();
+        // this.currentPage = 1;
+        // this.loadSessions();
+        this.getEnrollmentById();
+      },
+      error: (err) => {
+        console.log(err.message);
+        this.isLoading = false;
+        this.closeModal();
+      }
+    });
+  }
 
   getSessionStatusLabel(status: number): string {
-  switch (status) {
-    case 1:
-      return 'مجدولة';
-    case 2:
-      return 'مكتملة';
-    case 3:
-      return 'ملغية';
-    case 4:
-      return 'مدفوعة';
-    default:
-      return 'غير معروف';
+    switch (status) {
+      case 1:
+        return 'مجدولة';
+      case 2:
+        return 'مكتملة';
+      case 3:
+        return 'ملغية';
+      case 4:
+        return 'مدفوعة';
+      default:
+        return 'غير معروف';
+    }
   }
-}
 
 
-get remainingSessions(): number {
-  if (!this.enrollment || !this.enrollment.sessions) {
-    return 0;
+  get remainingSessions(): number {
+    if (!this.enrollment || !this.enrollment.sessions) {
+      return 0;
+    }
+    const completedOrCancelledSessions = this.enrollment.sessions.filter(s => s.status === SessionStatus.Completed || s.status === SessionStatus.Cancelled).length;
+    return this.enrollment.totalSessions - completedOrCancelledSessions;
   }
-  const completedOrCancelledSessions = this.enrollment.sessions.filter(s => s.status === SessionStatus.Completed || s.status === SessionStatus.Cancelled).length;
-  return this.enrollment.totalSessions - completedOrCancelledSessions;
-}
+
+
+
+
+  // component.ts
+  message: string = '';
+  messageType: 'success' | 'error' = 'success';
+  showMessage = false;
+
+  showToast(messageHtml: string, type: 'success' | 'error') {
+    this.message = messageHtml;
+    this.messageType = type;
+    this.showMessage = true;
+
+    setTimeout(() => {
+      this.showMessage = false;
+      this.message = '';
+    }, 4000);
+  }
+
 
 }
 

@@ -1,92 +1,122 @@
 <!-- Filters Section -->
-<div class="flex flex-col md:flex-row md:items-center gap-6 p-6">
-  <!-- Student Dropdown -->
-  <div class="relative flex-1">
-    <button (click)="studentDropdownOpen = !studentDropdownOpen"
-      class="w-full flex justify-between items-center border rounded-lg px-4 py-2 bg-white shadow-sm">
-      <span *ngIf="selectedStudent; else studentPlaceholder">
-        {{ selectedStudent.fullName }}
-      </span>
-      <ng-template #studentPlaceholder>
-        اختر طالب...
-      </ng-template>
-      <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
+<div class="p-6">
+  <div class="flex flex-wrap gap-4 w-full">
 
-    <div *ngIf="studentDropdownOpen"
-      class="absolute z-20 mt-2 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto border">
-      <!-- Search Input -->
-      <div class="p-2 border-b">
-        <input type="text" [(ngModel)]="studentSearchTerm" placeholder="ابحث باسم الطالب أو ID..."
-          class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 text-sm" />
-      </div>
-
-      <!-- Results -->
-      <div *ngFor="let s of getFilteredStudents()" (click)="selectStudent(s)"
-        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-        <img [src]="s.profileImg || 'https://placehold.co/150x150/007bff/ffffff?text=A'"
-          class="w-8 h-8 rounded-full mr-2 object-cover">
-        <div>
-          <p class="font-medium">{{ s.fullName }} </p>
-          <!-- <p class="text-xs text-gray-500">ID: {{ s.studentId }}</p> -->
+    <!-- Student Dropdown -->
+    <div class="flex-1 min-w-[250px]">
+      <button (click)="studentDropdownOpen = !studentDropdownOpen"
+        class="w-full flex justify-between items-center border rounded-lg px-4 py-2 bg-white shadow-sm">
+        <span>
+          <ng-container *ngIf="selectedStudent; else noStudent">
+            <img [src]="selectedStudent.profileImg || 'assets/default-avatar.png'"
+              class="w-6 h-6 rounded-full inline-block mr-2 object-center">
+            {{ selectedStudent.fullName }}
+          </ng-container>
+          <ng-template #noStudent>اختر الطالب</ng-template>
+        </span>
+      </button>
+      <!-- Dropdown -->
+      <div *ngIf="studentDropdownOpen"
+        class="absolute z-20 mt-2 w-[250px] bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto border">
+        <!-- Search -->
+        <div class="p-2 border-b">
+          <input type="text" [(ngModel)]="studentSearchTerm" placeholder="ابحث باسم الطالب أو ID..."
+            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-0 focus:border-[var(--green-primary)] focus:border-2" />
+        </div>
+        <!-- Options -->
+        <div *ngFor="let s of getFilteredStudents()" (click)="selectStudent(s)"
+          class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+          <img [src]="s.profileImg || 'https://placehold.co/150x150/007bff/ffffff?text=A'"
+            class="w-8 h-8 rounded-full mr-2 object-cover">
+          <p class="font-medium">{{ s.fullName }}</p>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Teacher Dropdown -->
-  <div class="relative flex-1">
-    <button (click)="teacherDropdownOpen = !teacherDropdownOpen"
-      class="w-full flex justify-between items-center border rounded-lg px-4 py-2 bg-white shadow-sm">
-      <span *ngIf="selectedTeacher; else teacherPlaceholder">
+   <!-- Teacher Dropdown -->
+<div class="flex-1 min-w-[250px] relative">
+  <button (click)="teacherDropdownOpen = !teacherDropdownOpen"
+    class="w-full flex justify-between items-center border rounded-lg px-4 py-2  bg-white shadow-sm">
+    <span>
+      <ng-container *ngIf="selectedTeacher; else noTeacher">
+        <img [src]="selectedTeacher.profileImg || 'assets/default-avatar.png'"
+          class="w-6 h-6 rounded-full inline-block mr-2 object-center">
         {{ selectedTeacher.fullName }}
-      </span>
-      <ng-template #teacherPlaceholder>
-        اختر معلم...
-      </ng-template>
-      <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
+      </ng-container>
+      <ng-template #noTeacher>اختر المعلم</ng-template>
+    </span>
+  </button>
 
-    <div *ngIf="teacherDropdownOpen"
-      class="absolute z-20 mt-2 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto border">
-      <!-- Search Input -->
-      <div class="p-2 border-b">
-        <input [(ngModel)]="teacherSearchTerm" type="text" placeholder="ابحث باسم المعلم أو ID..."
-          class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring focus:border-blue-300" />
-      </div>
-
-      <!-- Results -->
-      <div *ngFor="let t of getFilteredTeachers()" (click)="selectTeacher(t)"
-        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-        <img [src]="t.profileImg || 'https://placehold.co/150x150/663399/ffffff?text=A'"
-          class="w-8 h-8 rounded-full mr-2 object-cover">
-        <div>
-          <p class="font-medium">{{ t.fullName }} </p>
-          <!-- <p class="text-xs text-gray-500">ID: {{ t.teacherId }}</p> -->
-        </div>
-      </div>
+  <!-- Dropdown -->
+  <div *ngIf="teacherDropdownOpen"
+       class="absolute z-20 mt-2 w-[250px] bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto border">
+    <!-- Search -->
+    <div class="p-2 border-b">
+      <input type="text" [(ngModel)]="teacherSearchTerm" placeholder="ابحث باسم المعلم..."
+        class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-0 focus:border-[var(--green-primary)] focus:border-2" />
     </div>
-  </div>
-
-  <!-- Action Buttons -->
-  <div class="flex gap-3 md:ml-auto">
-    <button (click)="searchByStudentAndTeacher()"
-      class="bg-[var(--green-primary)] hover:bg-[var(--green-secondary)] text-white px-4 py-2 rounded-lg text-sm font-medium">
-      ابحث
-    </button>
-
-    <button (click)="clearSelections()"
-      class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">
-      مسح البحث
-    </button>
+    <!-- Options -->
+    <div *ngFor="let t of getFilteredTeachers()" (click)="selectTeacher(t)"
+         class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+      <img [src]="t.profileImg || 'https://placehold.co/150x150/f44336/ffffff?text=T'"
+           class="w-8 h-8 rounded-full mr-2 object-cover">
+      <p class="font-medium">{{ t.fullName }}</p>
+    </div>
   </div>
 </div>
+
+    <!-- Month -->
+    <div class="flex-1 min-w-[150px]">
+      <select [(ngModel)]="selectedMonth"
+        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-0 focus:border-[var(--green-primary)] focus:border-2">
+        <option [ngValue]="null">اختر الشهر</option>
+        <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+      </select>
+    </div>
+
+    <!-- Year -->
+    <div class="flex-1 min-w-[120px]">
+      <select [(ngModel)]="selectedYear"
+        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-0 focus:border-[var(--green-primary)] focus:border-2">
+        <option [ngValue]="null">اختر السنة</option>
+        <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+      </select>
+    </div>
+
+    <!-- Day -->
+    <div class="flex-1 min-w-[100px]">
+      <input type="number" [(ngModel)]="selectedDay" min="1" max="31" placeholder="اليوم"
+        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-0 focus:border-[var(--green-primary)] focus:border-2" />
+    </div>
+
+    <!-- Enrollment Status -->
+    <div class="flex-1 min-w-[150px]">
+      <select [(ngModel)]="selectedEnrollmentStatus"
+        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-0 focus:border-[var(--green-primary)] focus:border-2">
+        <option [ngValue]="null">اختر الحالة</option>
+        <option *ngFor="let status of EnrollmentStatuses" [value]="status.id">{{ status.label }}</option>
+      </select>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-3 flex-1  justify-end">
+      <button (click)="loadEnrollments()"
+        class="w-full md:w-32 bg-[var(--green-primary)] hover:bg-[var(--green-secondary)] text-white px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
+        ابحث
+      </button>
+      <button (click)="clearSelections()"
+        class="w-full md:w-32 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--green-secondary)] hover:text-white cursor-pointer">
+        مسح البحث
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
 
 
 
@@ -103,203 +133,252 @@
   <!-- Table Container -->
   <div class="bg-[var(--background-primary)] shadow-lg rounded-b-lg overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="min-w-full table-auto">
-        <thead class="bg-[var(--green-secondary)] text-white">
-          <tr>
+      <div class="h-[600px] overflow-y-auto"> <!-- 👈 Scroll عمودي -->
 
-            <th class="px-4 py-3 text-right font-semibold">الطالب</th>
-            <th class="px-4 py-3 text-right font-semibold">المعلم</th>
-            <th class="px-4 py-3 text-right font-semibold">خطة الاشتراك</th>
-            <th class="px-4 py-3 text-right font-semibold">الرسوم</th>
-            <th class="px-4 py-3 text-right font-semibold">الحالة</th>
-            <th class="px-4 py-3 text-right font-semibold">الفترة</th>
-            <th class="px-4 py-3 text-right font-semibold">الجلسات</th>
-            <th class="px-4 py-3 text-right font-semibold">الإجراءات</th> <!-- 👈 عمود جديد -->
+        <table class="min-w-full table-auto">
+          <thead class="bg-[var(--green-secondary)] sticky top-0  text-white">
+            <tr>
 
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Loop through enrollments -->
-          <tr *ngFor="let enrollment of enrollments"
-            class="border-b border-[var(--gray-medium)] hover:bg-[var(--gray-light)] transition-colors">
+              <th class="px-4 py-3 text-right font-semibold">الطالب</th>
+              <th class="px-4 py-3 text-right font-semibold">المعلم</th>
+              <th class="px-4 py-3 text-right font-semibold">خطة الاشتراك</th>
+              <th class="px-4 py-3 text-right font-semibold">الرسوم</th>
+              <th class="px-4 py-3 text-right font-semibold">الحالة</th>
+              <th class="px-4 py-3 text-right font-semibold">الفترة</th>
+              <th class="px-4 py-3 text-right font-semibold">الجلسات</th>
+              <th class="px-4 py-3 text-right font-semibold">الإجراءات</th> <!-- 👈 عمود جديد -->
+
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loop through enrollments -->
+            <tr *ngFor="let enrollment of enrollments"
+              class="border-b border-[var(--gray-medium)] hover:bg-[var(--gray-light)] transition-colors" [ngClass]="{
+      'bg-green-100 text-green-700': enrollment.enrollmentStatus === 2,
+
+    }">
 
 
 
 
-            <!-- Student Info -->
-            <td class="px-4 py-4">
-              <div class="flex flex-col space-x-3 space-x-reverse" (click)="goToDetails(enrollment.id)">
-                <img [src]="enrollment.studentImg || '/assets/default-avatar.png'"
-                  [alt]="'صورة ' + (enrollment.studentName || 'الطالب')"
-                  class="w-10 h-10 rounded-full object-cover border-2 border-[var(--gold-secondary)]">
-                <div>
-                  <p class="font-medium text-[var(--text-primary)]">
-                    {{ enrollment.studentName || 'غير محدد' }}
-                  </p>
-                  <!-- <p class="text-sm text-[var(--text-secondary)]" *ngIf="enrollment.studentId">
+
+              <!-- Student Info -->
+              <td class="px-4 py-4">
+                <div class="flex flex-col space-x-3 space-x-reverse" (click)="goToDetails(enrollment.id)">
+                  <img [src]="enrollment.studentImg || '/assets/default-avatar.png'"
+                    [alt]="'صورة ' + (enrollment.studentName || 'الطالب')"
+                    class="w-12 h-12 rounded-full object-cover border-2 border-[var(--gold-secondary)]">
+                  <div>
+                    <p class="font-medium text-[var(--text-primary)]">
+                      {{ enrollment.studentName || 'غير محدد' }}
+                    </p>
+                    <!-- <p class="text-sm text-[var(--text-secondary)]" *ngIf="enrollment.studentId">
                     ID: {{ enrollment.studentId.substring(0, 8) }}...
                   </p> -->
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <!-- Teacher Info -->
-            <td class="px-4 py-4">
-              <div class="flex flex-col space-x-3 space-x-reverse">
-                <img [src]="enrollment.teacherImg || '/assets/default-avatar.png'"
-                  [alt]="'صورة ' + (enrollment.teacherName || 'المعلم')"
-                  class="w-10 h-10 rounded-full object-cover border-2 border-[var(--green-primary)]">
-                <div>
-                  <p class="font-medium text-[var(--text-primary)]">
-                    {{ enrollment.teacherName || 'غير محدد' }}
-                  </p>
-                  <!-- <p class="text-sm text-[var(--text-secondary)]" *ngIf="enrollment.teacherId">
+              <!-- Teacher Info -->
+              <td class="px-4 py-4">
+                <div class="flex flex-col space-x-3 space-x-reverse">
+                  <img [src]="enrollment.teacherImg || '/assets/default-avatar.png'"
+                    [alt]="'صورة ' + (enrollment.teacherName || 'المعلم')"
+                    class="w-12 h-12 rounded-full object-cover border-2 border-[var(--green-primary)]">
+                  <div>
+                    <p class="font-medium text-[var(--text-primary)]">
+                      {{ enrollment.teacherName || 'غير محدد' }}
+                    </p>
+                    <!-- <p class="text-sm text-[var(--text-secondary)]" *ngIf="enrollment.teacherId">
                     ID: {{ enrollment.teacherId.substring(0, 8) }}...
                   </p> -->
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <!-- Subscription Plan -->
-            <td class="px-4 py-4">
-              <div class="bg-[var(--green-primary)] bg-opacity-10 p-2 rounded">
-                <p class="font-medium text-[var(--gray-light)]">
-                  {{ enrollment.subscriptionPlanDetails.name }}
-                </p>
-                <!-- <p class="text-sm text-[var(--text-secondary)]">
+              <!-- Subscription Plan -->
+              <td class="px-4 py-4">
+                <div class=" p-2 rounded">
+                  <p class="font-medium text-xl text-[var(--gold-primary)]">
+                    {{ enrollment.subscriptionPlanDetails.name }}
+                  </p>
+                  <!-- <p class="text-sm text-[var(--text-secondary)]">
                   نوع: {{ enrollment.subscriptionPlanDetails.type }}
                   مدة: {{ enrollment.subscriptionPlanDetails.duration }} دقيقة
                 </p> -->
-              </div>
-            </td>
+                </div>
+              </td>
 
-            <!-- Fees -->
-            <td class="px-4 py-4">
-              <div class="space-y-1">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm text-[var(--text-secondary)]">رسوم التسجيل:</span>
-                  <span class="font-medium">{{ enrollment.enrollmentFee }} ريـال</span>
+              <!-- Fees -->
+              <td class="px-4 py-4">
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-[var(--text-secondary)]">رسوم التسجيل:</span>
+                    <span class="font-medium">{{ enrollment.enrollmentFee }} ريـال</span>
+                  </div>
+                  <div class="flex items-center justify-between" *ngIf="enrollment.discount && enrollment.discount > 0">
+                    <span class="text-sm text-[var(--text-secondary)]">خصم:</span>
+                    <span class="text-red-600 font-medium">-{{ enrollment.discount }} %</span>
+                  </div>
+                  <div class="flex items-center justify-between border-t pt-1">
+                    <span class="text-sm font-medium">المبلغ الفعلي:</span>
+                    <span class="font-bold text-[var(--gold-primary)]">{{ enrollment.actualFee }} ريـال</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-[var(--text-secondary)]">مبلغ الطالب:</span>
+                    <span class="font-medium text-[var(--green-primary)]">{{ enrollment.studentPaymentAmount }}
+                      ريـال</span>
+                  </div>
                 </div>
-                <div class="flex items-center justify-between" *ngIf="enrollment.discount && enrollment.discount > 0">
-                  <span class="text-sm text-[var(--text-secondary)]">خصم:</span>
-                  <span class="text-red-600 font-medium">-{{ enrollment.discount }} %</span>
-                </div>
-                <div class="flex items-center justify-between border-t pt-1">
-                  <span class="text-sm font-medium">المبلغ الفعلي:</span>
-                  <span class="font-bold text-[var(--gold-primary)]">{{ enrollment.actualFee }} ريـال</span>
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-sm text-[var(--text-secondary)]">مبلغ الطالب:</span>
-                  <span class="font-medium text-[var(--green-primary)]">{{ enrollment.studentPaymentAmount }}
-                    ريـال</span>
-                </div>
-              </div>
-            </td>
+              </td>
 
-            <!-- Status -->
-            <td class="px-4 py-4">
-              <div class="space-y-2">
-                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
+              <!-- Status -->
+              <td class="px-4 py-4">
+                <div class="space-y-2">
+                  <span class="inline-block px-2 py-1 rounded-xl text-lg font-medium" [ngClass]="{
             'bg-green-100 text-green-800': enrollment.enrollmentStatus === 1,
             'bg-red-100 text-red-800': enrollment.enrollmentStatus === 2,
             'bg-yellow-100 text-yellow-800': enrollment.enrollmentStatus === 3,
             'bg-gray-100 text-gray-800': enrollment.enrollmentStatus !== 1 && enrollment.enrollmentStatus !== 2 && enrollment.enrollmentStatus !== 3
           }">
-                  {{ getEnrollmentStatusLabel(enrollment.enrollmentStatus) }}
-                </span>
-                <p class="text-xs text-[var(--text-secondary)]">
-                  نوع التخصص: {{ getSpecializationLabel(enrollment.specializationType) }}
-                </p>
-              </div>
-            </td>
+                    {{ getEnrollmentStatusLabel(enrollment.enrollmentStatus) }}
+                  </span>
+                  <p class="text-xs text-[var(--text-secondary)]">
+                    <span class="text-xl text-[var(--gold-primary)] font-medium">{{
+                      getSpecializationLabel(enrollment.specializationType) }}</span>
+                  </p>
+                </div>
+              </td>
 
 
-            <!-- Period -->
-            <td class="px-4 py-4">
-              <div class="space-y-1">
-                <div class="flex items-center">
-                  <svg class="w-4 h-4 ml-1 text-[var(--green-primary)]" fill="none" stroke="currentColor"
+              <!-- Period -->
+              <td class="px-4 py-4">
+                <div class="space-y-1">
+                  <div class="flex items-center">
+                    <svg class="w-4 h-4 ml-1 text-[var(--green-primary)]" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                      </path>
+                    </svg>
+                    <span class="text-sm text-[var(--text-secondary)]">البداية:</span>
+                  </div>
+                  <p class="font-medium">{{ formatDate(enrollment.startDate) }}</p>
+
+                  <div class="flex items-center mt-2">
+                    <svg class="w-4 h-4 ml-1 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                      </path>
+                    </svg>
+                    <span class="text-sm text-[var(--text-secondary)]">النهاية:</span>
+                  </div>
+                  <p class="font-medium">{{ formatDate(enrollment.endDate) }}</p>
+                </div>
+              </td>
+
+              <!-- Sessions -->
+              <td class="px-4 py-4">
+                <div class="text-center">
+                  <div class=" bg-opacity-20 p-3 rounded-lg">
+                    <div class="text-xl font-bold text-[var(--gold-primary)]">
+                      مكتمل {{ enrollment.totalSessions - enrollment.remainingSessions }}
+                    </div>
+                    <div class="text-lg text-[var(--text-secondary)]">
+                      من أصل {{ enrollment.totalSessions }}
+                    </div>
+                    <div class="text-lg text-[var(--text-secondary)] mt-1">
+                      متبقي: {{ enrollment.remainingSessions }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+
+              <!-- Actions Column -->
+              <td class="px-4 py-4 text-center">
+                <button (click)="goToDetails(enrollment.id)"
+                  class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded text-sm font-medium transition-colors cursor-pointer">
+                  التفاصيل
+                </button>
+              </td>
+            </tr>
+
+            <!-- Empty State Row -->
+            <tr *ngIf="enrollments.length === 0" id="empty-state">
+              <td colspan="8" class="text-center py-12">
+                <div class="flex flex-col items-center">
+                  <svg class="w-16 h-16 text-[var(--gray-medium)] mb-4" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
                   </svg>
-                  <span class="text-sm text-[var(--text-secondary)]">البداية:</span>
+                  <h3 class="text-lg font-medium text-[var(--text-primary)] mb-2">لا توجد تسجيلات</h3>
+                  <p class="text-[var(--text-secondary)]">لم يتم العثور على أي تسجيلات حالياً</p>
                 </div>
-                <p class="font-medium">{{ formatDate(enrollment.startDate) }}</p>
-
-                <div class="flex items-center mt-2">
-                  <svg class="w-4 h-4 ml-1 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                  </svg>
-                  <span class="text-sm text-[var(--text-secondary)]">النهاية:</span>
-                </div>
-                <p class="font-medium">{{ formatDate(enrollment.endDate) }}</p>
-              </div>
-            </td>
-
-            <!-- Sessions -->
-            <td class="px-4 py-4">
-              <div class="text-center">
-                <div class="bg-[var(--gold-primary)] bg-opacity-20 p-3 rounded-lg">
-                  <div class="text-2xl font-bold text-[var(--gold-primary)]">
-                    {{ enrollment.totalSessions - enrollment.remainingSessions }}
-                  </div>
-                  <div class="text-xs text-[var(--text-secondary)]">
-                    من أصل {{ enrollment.totalSessions }}
-                  </div>
-                  <div class="text-xs text-[var(--text-secondary)] mt-1">
-                    متبقي: {{ enrollment.remainingSessions }}
-                  </div>
-                </div>
-              </div>
-            </td>
-
-
-            <!-- Actions Column -->
-            <td class="px-4 py-4 text-center">
-              <button (click)="goToDetails(enrollment.id)"
-                class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-3 py-1 rounded text-sm font-medium transition-colors">
-                التفاصيل
-              </button>
-            </td>
-          </tr>
-
-          <!-- Empty State Row -->
-          <tr *ngIf="enrollments.length === 0" id="empty-state">
-            <td colspan="8" class="text-center py-12">
-              <div class="flex flex-col items-center">
-                <svg class="w-16 h-16 text-[var(--gray-medium)] mb-4" fill="none" stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                  </path>
-                </svg>
-                <h3 class="text-lg font-medium text-[var(--text-primary)] mb-2">لا توجد تسجيلات</h3>
-                <p class="text-[var(--text-secondary)]">لم يتم العثور على أي تسجيلات حالياً</p>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Footer -->
-    <div class="bg-[var(--gray-light)] px-6 py-3 border-t border-[var(--gray-medium)]">
-      <div class="flex items-center justify-between">
-        <p class="text-sm text-[var(--text-secondary)]">
-          إجمالي التسجيلات: <span class="font-medium text-[var(--text-primary)]">{{ enrollments.length }}</span>
-        </p>
-        <div class="flex items-center space-x-2 space-x-reverse">
-          <button
-            class="bg-[var(--green-primary)] hover:bg-[var(--green-secondary)] text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-            تصدير البيانات
+    <!-- pagination  -->
+    <div dir="rtl" class="bg-[var(--background-primary)] shadow-sm mt-6 px-6 py-4 rounded-lg">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+
+        <!-- أزرار التحكم -->
+        <div class="flex items-center gap-2">
+          <!-- الأول -->
+          <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7">
+              </path>
+            </svg>
           </button>
-          <button
-            class="bg-[var(--gold-primary)] hover:bg-[var(--gold-secondary)] text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-            إضافة تسجيل جديد
+
+          <!-- السابق -->
+          <button (click)="previousPage()" [disabled]="currentPage === 1"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+
+          <!-- الصفحات -->
+          <div class="flex items-center gap-1">
+            <button *ngFor="let page of getVisiblePages()" (click)="goToPage(page)"
+              [class.bg-[var(--green-primary)]]="page === currentPage" [class.text-white]="page === currentPage"
+              class="w-8 h-8 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 text-sm font-medium transition-colors text-[var(--text-primary)]">
+              {{ page }}
+            </button>
+          </div>
+
+          <!-- التالي -->
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+
+          <!-- الأخير -->
+          <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+            class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7">
+              </path>
+            </svg>
           </button>
         </div>
+
+        <!-- النص -->
+        <div class="text-sm text-[var(--text-secondary)]">
+          عرض {{ getShowingRange() }} من أصل {{ totalCount }} اشتراك
+        </div>
+
       </div>
     </div>
   </div>
@@ -308,7 +387,7 @@
   <div *ngIf="isLoading" class="absolute inset-0 flex items-center justify-center bg-white/95 z-50">
     <div class="text-center">
       <div
-        class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[var(--green-primary)] border-t-transparent mb-3">
+        class="inline-block animate-spin rounded-full h-20 w-20 border-4 border-[var(--green-primary)] border-t-transparent mb-3">
       </div>
       <p class="text-[var(--text-secondary)] text-base font-medium">جارٍ تحميل البيانات..</p>
     </div>

@@ -4,6 +4,8 @@ import { RegisterComponent } from './shared/Account/register/register.component'
 import { AppComponent } from './app.component';
 import { NgModule } from '@angular/core';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { DashboardAnalysisComponent } from './dashboard/dashboard/DashboardAnalysis/DashboardAnalysis.component';
+import { AdminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
 
@@ -12,8 +14,10 @@ export const routes: Routes = [
 
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
+  // { path: 'dashboardd', component: DashboardAnalysisComponent },
   // { path: 'sidebar', component: SidebarComponent },
-  { path: '', loadChildren: () => import('./dashboard/dashboard-routes.module').then(m => m.DashboardRoutesModule) },
+
+  { path: '', canActivate: [AdminGuard], loadChildren: () => import('./dashboard/dashboard-routes.module').then(m => m.DashboardRoutesModule) },
 
 
 

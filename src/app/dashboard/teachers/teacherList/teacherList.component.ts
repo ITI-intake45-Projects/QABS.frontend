@@ -4,6 +4,17 @@ import { Teacher } from '../../../core/models/Details/Teacher';
 import { StudentList } from '../../../core/models/Details/StudentList';
 import { AccountService } from '../../../core/services/Account.service';
 import { SpecializationType } from '../../../core/models/Enums/SpecializationType.enum';
+import { TeacherPayout } from '../../../core/models/Details/TeacherPayout';
+import { Session } from '../../../core/models/Details/Session';
+import { SessionService } from '../../../core/services/session.service';
+import { SessionStatus } from '../../../core/models/Enums/SessionStatus.enum';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { TeacherAvailabilityCreateVM } from '../../../core/models/Create/TeacherAvailabilityCreateVM';
+import { TeacherAvailability } from '../../../core/models/Details/TeacherAvailability';
+import { DayOfWeek } from '../../../core/models/Enums/DayOfWeek.enum';
+
+
 
 @Component({
   selector: 'app-teacherList',
@@ -15,15 +26,20 @@ export class TeacherListComponent implements OnInit {
 
   constructor(
     private teacherService: TeacherService,
-    private AccService: AccountService
+    private sessionService: SessionService
+
   ) { }
 
   ngOnInit() {
     this.loadTeachers();
-    console.log('teacher is  : ', this.teacher)
+
   }
 
 
+
+
+
+  completedSessions: Session[] = [];
   students: StudentList[] = [];
   teachers: Teacher[] = [];
   filteredTeachers: Teacher[] = [];
@@ -32,6 +48,11 @@ export class TeacherListComponent implements OnInit {
   selectedSpecializations: number[] = []; // الـ id المختارة
 
   teacher: Teacher | null = null; // يبدأ Null مش {}
+  teacherPayouts: TeacherPayout[] = []; // تبدأ فاضية
+  teacherAvailability: TeacherAvailability[] = [];
+  DayOfWeek = DayOfWeek;
+
+
 
   specializations = [
     { id: SpecializationType.Foundation, label: 'تأسيس' },
@@ -49,9 +70,34 @@ export class TeacherListComponent implements OnInit {
 
 
 
+  getCompletedSessionByTeacherId() {
+
+    console.log('this is teacher id :', this.teacher?.teacherId)
+    this.sessionService.getCompletedSessionByTeacherId(this.teacher!.teacherId).subscribe({
+      next: (res) => {
+        console.log('Completed sessions:', res.data);
+        this.completedSessions = res.data;
+        this.openModalPayout();
+        // this.students = res.data || [];
+      },
+      error: (err) => {
+        console.error('Error fetching enrolled students:', err);
+      }
+    });
+  }
+
+
+
   getEnrolledStudents(teacherId: string) {
+    console.log('this is teacherPayouts :', this.teacherPayouts)
 
     this.teacher = this.teachers.find(t => t.teacherId == teacherId) || null;
+    if (this.teacher) {
+      // حدّث الـ payouts بعد ما تختار teacher
+      this.teacherPayouts = this.teacher.payouts ?? [];
+      this.teacherAvailability = this.teacher.availability ?? [];
+
+    }
     console.log('teacher.spec :', this.teacher?.specializations)
     console.log('teacher', this.teacher)
 
@@ -60,6 +106,7 @@ export class TeacherListComponent implements OnInit {
       next: (res) => {
         console.log('Enrolled students:', res);
         this.students = res.data || [];
+        this.initPagination();
       },
       error: (err) => {
         console.error('Error fetching enrolled students:', err);
@@ -102,7 +149,7 @@ export class TeacherListComponent implements OnInit {
 
 
   deleteTeacher(teacherId: string) {
-    this.AccService.DeleteAccount(teacherId).subscribe({
+    this.teacherService.DeleteTeacher(teacherId).subscribe({
       next: (res) => {
         console.log('Teachers data:', res);
         this.loadTeachers();
@@ -144,11 +191,8 @@ export class TeacherListComponent implements OnInit {
   showAddModal = false;
   showEditModal = false;
 
-  newSlot = {
-    day: '',
-    start: '',
-    end: ''
-  };
+
+
 
   openAddModal() {
     this.showAddModal = true;
@@ -158,33 +202,26 @@ export class TeacherListComponent implements OnInit {
   }
 
 
-  closeAddModal() {
-    this.showAddModal = false;
-    this.newSlot = { day: '', start: '', end: '' }; // reset
-  }
-  closeEditModal() {
-    this.showEditModal = false;
-    this.newSlot = { day: '', start: '', end: '' }; // reset
-  }
 
-  saveNewSlot() {
-    if (this.newSlot.day && this.newSlot.start && this.newSlot.end) {
-      this.availability.push({ ...this.newSlot });
-      this.closeAddModal();
-    }
-  }
+
+  // saveNewSlot() {
+  //   if (this.newSlot.day && this.newSlot.start && this.newSlot.end) {
+  //     this.availability.push({ ...this.newSlot });
+  //     this.closeAddModal();
+  //   }
+  // }
 
 
   // دوال التحكم
-  editSlot(slot: any) {
-    console.log('Edit clicked:', slot);
-    // تفتح مودال أو فورم للتعديل
-  }
+  // editSlot(slot: any) {
+  //   console.log('Edit clicked:', slot);
+  //   // تفتح مودال أو فورم للتعديل
+  // }
 
-  deleteSlot(index: number) {
-    console.log('Delete clicked:', this.availability[index]);
-    this.availability.splice(index, 1); // تمسح العنصر من الجدول
-  }
+  // deleteSlot(index: number) {
+  //   console.log('Delete clicked:', this.availability[index]);
+  //   this.availability.splice(index, 1); // تمسح العنصر من الجدول
+  // }
 
   toggleSpecialization(id: number, event: any) {
     if (event.target.checked) {
@@ -217,6 +254,366 @@ export class TeacherListComponent implements OnInit {
 
 
 
+  addPayout() {
+
+  }
+
+
+  selectedPayout: any | null = null;
+  showPayoutModal = false;
+  showPayoutModalDetails = false;
+
+  openDetails(payout: any) {
+    this.selectedPayout = payout;
+    this.showPayoutModalDetails = true;
+  }
+  openModalPayout() {
+    this.showPayoutModal = true;
+  }
+
+  closeModal() {
+    this.selectedPayout = null;
+    this.showPayoutModalDetails = false;
+  }
+
+  closeModalPayout() {
+    this.showPayoutModal = false;
+
+  }
+
+
+
+  // في داخل الكلاس TeacherListComponent
+  get totalDuration(): number {
+    return this.completedSessions.reduce((sum, session) => sum + (session.duration || 0), 0);
+  }
+
+  get totalAmount(): number {
+    return this.completedSessions.reduce((sum, session) => sum + (session.amount || 0), 0);
+  }
+
+  // لو حابب تضبط تاريخ الدفع من الـ selectedPayout
+  get paymentDate(): string {
+
+    return new Date().toLocaleString(); // أو تستخدم format اللي تحبه
+  }
+
+
+
+  selectedFile: File | null = null;
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      console.log('Selected file:', file);
+    }
+  }
+
+
+  payNow() {
+
+    this.isLoading = true;
+    if (!this.teacher) return;
+
+    const formData = new FormData();
+    formData.append('TeacherId', this.teacher.teacherId);
+    formData.append('PaidAt', new Date().toISOString());
+    if (this.selectedFile) {
+      formData.append('ImageFile', this.selectedFile);
+    }
+    // formData.append('TotalHours', this.totalDuration.toString());
+    // formData.append('TotalAmount', this.totalAmount.toString());
+
+    // يمكن إرسال قائمة الجلسات إذا تحتاج
+    // const sessions = this.completedSessions.map(s => ({
+    //   Id: s.id,
+    //   EnrollmentId: s.enrollmentId,
+    //   StartTime: s.startTime,
+    //   Duration: s.duration,
+    //   Amount: s.amount,
+    //   Status: s.status
+    // }));
+    // formData.append('sessionDetails', JSON.stringify(sessions));
+
+    // استدعاء الـ service لإرسال البيانات للباك اند
+    this.teacherService.createTeacherPayout(formData).subscribe({
+      next: (res) => {
+        console.log('Payment created:', res);
+
+        this.showPayoutModal = false;
+        this.isLoading = false;
+        this.showToast('تم الدفع للمعلم بنجاح ✅ سيتم تحديث البيانات خلال 3 ثوان ...', 'success');
+
+        setTimeout(() => {
+          this.loadTeachers(); // أو location.reload();
+        }, 4000);
+
+      },
+      error: (err) => {
+        this.showPayoutModal = false;
+        this.isLoading = false;
+        this.showToast('حدث خطأ أثناء دفع المبلغ ❌', 'error');
+        console.error('Error creating payment:', err);
+      }
+    });
+  }
+
+
+  getSessionStatusLabel(status: SessionStatus | undefined): string {
+    switch (status) {
+      case 1:
+        return 'مجدولة';
+      case 2:
+        return 'مكتملة';
+      case 3:
+        return 'ملغية';
+      case 4:
+        return 'مدفوعة';
+      default:
+        return 'غير معروف';
+    }
+  }
+
+  // // تحميل الصورة
+  // downloadModalAsPDF() {
+  //   const modalElement = document.querySelector('.modal-content') as HTMLElement;
+
+  //   if (!modalElement) return;
+
+  //   html2canvas(modalElement, {
+  //     useCORS: true,
+  //     allowTaint: true,
+  //     scrollX: 0,
+  //     scrollY: -window.scrollY,
+  //     ignoreElements: (el) => {
+  //       // تجاهل أي عنصر فيه لون غير مدعوم (oklch)
+  //       return getComputedStyle(el).color.includes('oklch');
+  //     }
+  //   })
+  //   .then(canvas => {
+  //     const imgData = canvas.toDataURL('image/png');
+
+  //     const pdf = new jsPDF('p', 'mm', 'a4');
+
+  //     const imgProps = pdf.getImageProperties(imgData);
+  //     const pdfWidth = 210; // عرض A4 بالملم
+  //     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  //     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  //     pdf.save('payout-details.pdf');
+  //   })
+  //   .catch(err => console.error('Error generating PDF:', err));
+  // }
+  getDayLabel(day: number): string {
+    const days = [
+      'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء',
+      'الخميس', 'الجمعة', 'السبت'
+    ];
+    return days[day] || '';
+  }
+
+  // private dayMap: { [key: string]: number } = {
+  //   'الأحد': 0,
+  //   'الاثنين': 1,
+  //   'الثلاثاء': 2,
+  //   'الأربعاء': 3,
+  //   'الخميس': 4,
+  //   'الجمعة': 5,
+  //   'السبت': 6
+  // };
+
+  newSlot = {
+    day: DayOfWeek.Sunday, // default value
+    start: '',
+    end: ''
+  };
+
+  closeAddModal() {
+    this.showAddModal = false;
+    this.newSlot = { day: DayOfWeek.Sunday, start: '', end: '' }; // reset
+  }
+  closeEditModal() {
+    this.showEditModal = false;
+    this.newSlot = { day: DayOfWeek.Sunday, start: '', end: '' }; // reset
+  }
+
+
+  saveNewSlot() {
+
+
+    const slot: TeacherAvailabilityCreateVM = {
+      dayOfWeek: Number(this.newSlot.day), // تحويل من string → number
+      startTime: this.newSlot.start + ':00',
+      endTime: this.newSlot.end + ':00',
+      teacherId: this.teacher?.teacherId
+    };
+
+    console.log('this is new slot: ', slot);
+    this.isLoading = true;
+
+    // استدعاء الـ service
+    this.teacherService.addAvailability(slot).subscribe({
+      next: (res) => {
+        console.log('Enrollment created:', res);
+        this.showAddModal = false;
+        this.isLoading = false;
+        this.teacher = null;
+        this.showToast('تم إضافة وقت متاح للمعلم بنجاح ✅ سيتم تحديث البيانات خلال 3 ثوان ...', 'success');
+
+        setTimeout(() => {
+          this.loadTeachers(); // أو location.reload();
+        }, 4000);
+
+
+
+      },
+      error: (err) => {
+        this.showAddModal = false;
+        this.isLoading = false;
+        this.showToast('حدث خطأ أثناء إنشاء الاشتراك ❌', 'error');
+        console.error('Error creating enrollment', err);
+      }
+    });
+  }
+
+
+  deleteAvailability(id: number) {
+    this.isLoading = true;
+
+    this.teacherService.deleteAvailability(id).subscribe({
+      next: (res) => {
+        console.log('delete Availability:', res);
+        this.teacher = null;
+        this.isLoading = false;
+
+        this.showToast('تم حذف  الموعد المتاح للمعلم بنجاح ✅ سيتم تحديث البيانات خلال 3 ثوان ...', 'success');
+
+        setTimeout(() => {
+          this.loadTeachers(); // أو location.reload();
+        }, 4000);
+
+
+
+      },
+      error: (err) => {
+        // this.showAddModal = false;
+        this.isLoading = false;
+        this.showToast('حدث خطأ أثناء حذف الموعد ❌', 'error');
+        console.error('Error creating enrollment', err);
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+  message = '';
+  messageType: 'success' | 'error' = 'success';
+  showMessage = false;
+
+  showToast(message: string, type: 'success' | 'error') {
+    this.message = message;
+    this.messageType = type;
+    this.showMessage = true;
+
+    // تختفي تلقائياً بعد 3 ثواني
+    setTimeout(() => {
+      this.showMessage = false;
+    }, 3000);
+  }
+
+
+
+  formatTime(time: string): string {
+    if (!time) return '';
+
+    // نفصل الساعات والدقايق
+    const [hoursStr, minutesStr] = time.split(':');
+    let hours = parseInt(hoursStr, 10);
+    const minutes = minutesStr.padStart(2, '0');
+
+    const suffix = hours >= 12 ? 'م' : 'ص';
+    if (hours === 0) {
+      hours = 12; // 00 → 12 ص
+    } else if (hours > 12) {
+      hours -= 12; // 13 → 1 م
+    }
+
+    return `${hours}:${minutes} ${suffix}`;
+  }
+
+
+
+  // pagination
+
+
+  // pagination vars
+  pageSize: number = 5;        // عدد العناصر في الصفحة
+  currentPage: number = 1;
+  totalPages: number = 0;
+  totalCount: number = 0;
+
+  // array للعرض فقط
+  paginatedPayouts: any[] = [];
+
+  // استدعاء بعد ما تيجي الداتا من السيرفر
+  initPagination(): void {
+    this.totalCount = this.teacherPayouts.length;
+    this.totalPages = Math.ceil(this.totalCount / this.pageSize);
+    this.updatePaginatedData();
+  }
+
+  // تحديث الداتا اللي بتتعرض
+  updatePaginatedData(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedPayouts = this.teacherPayouts.slice(startIndex, endIndex);
+  }
+
+  // pagination control
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePaginatedData();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedData();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedData();
+    }
+  }
+
+  getVisiblePages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // showing range text
+  getShowingRange(): string {
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(start + this.pageSize - 1, this.totalCount);
+    return `${start}-${end}`;
+  }
+
 }
+
+
 
 

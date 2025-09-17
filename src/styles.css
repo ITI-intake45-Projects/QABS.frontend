@@ -2,6 +2,17 @@
 @import "tailwindcss";
 @import 'flowbite';
 
+.toast-date {
+  color: var(--gold-primary);
+  font-weight: 700;
+}
+
+.toast-sub {
+  display: block;
+  color: white;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
 
 
 /* Success toast → الأخضر الأساسي */

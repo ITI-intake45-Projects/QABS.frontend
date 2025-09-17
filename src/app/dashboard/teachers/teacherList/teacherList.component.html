@@ -66,10 +66,10 @@
                    hover:bg-[var(--green-dark)] transition-colors">
             التفاصيل
           </button> -->
-            <button (click)="deleteTeacher(teacher.teacherId)" class="px-3 py-1 text-xs rounded-md bg-[var(--gold-primary)] text-white shadow-sm
+            <!-- <button (click)="deleteTeacher(teacher.teacherId)" class="px-3 py-1 text-xs rounded-md bg-[var(--gold-primary)] text-white shadow-sm
                    hover:bg-[var(--gold-secondary)] transition-colors">
               حذف
-            </button>
+            </button> -->
           </div>
         </li>
         }
@@ -165,8 +165,8 @@
       <div class="relative overflow-hidden cursor-pointer p-8 mb-8 border-b-2 border-gray-200">
         <div class="flex transition-transform duration-500 ease-out " [style.transform]="getTransform()">
           <!-- Student Card -->
-          <div *ngFor="let student of students" class="flex-shrink-0 px-2 sm:px-3 "
-            [style.width.%]="100 / itemsPerView">
+          <div *ngFor="let student of students" class="flex-shrink-0 px-2 sm:px-3 cursor-pointer"
+            [style.width.%]="100 / itemsPerView" [routerLink]="['/dashboard/students/details', student.studentId]">
 
             <div class="flex items-center space-x-2 bg-[var(--gray-light)]  p-2 rounded-lg shadow-sm h-16
             transform transition-transform duration-300 ease-in-out hover:scale-105">
@@ -188,7 +188,7 @@
 
         <!-- Add Button -->
         <button (click)="openAddModal()" class="px-4 py-2 text-sm rounded-md bg-[var(--gold-primary)] text-white
-           hover:bg-[var(--gold-secondary)] transition-colors shadow-md cursor-pointer flex items-center gap-2">
+           hover:bg-[var(--green-primary)] transition-colors shadow-md cursor-pointer flex items-center gap-2">
           <i class="fas fa-plus"></i>
           إضافة موعد
         </button>
@@ -206,18 +206,19 @@
             </tr>
           </thead>
           <tbody class="bg-[var(--background-primary)] divide-y divide-[var(--gray-medium)]">
-            <tr *ngFor="let slot of availability; let i = index" class="hover:bg-[var(--gray-light)] transition-colors">
+            <tr *ngFor="let slot of teacherAvailability; let i = index"
+              class="hover:bg-[var(--gray-light)] transition-colors">
 
-              <td class="px-4 py-2 text-[var(--text-primary)]">{{ teacher.availability }}</td>
-              <td class="px-4 py-2 text-[var(--text-secondary)]">{{ slot.start }}</td>
-              <td class="px-4 py-2 text-[var(--text-secondary)]">{{ slot.end }}</td>
+              <td class="px-4 py-2 text-[var(--text-primary)]">{{ getDayLabel(slot.dayOfWeek) }}</td>
+              <td class="px-4 py-2 text-[var(--text-secondary)]">{{ formatTime(slot.startTime) }}</td>
+              <td class="px-4 py-2 text-[var(--text-secondary)]">{{ formatTime(slot.endTime) }}</td>
 
               <td class="px-4 py-2 flex justify-center gap-2">
-                <button (click)="editSlot(slot)" class="px-3 py-1 text-xs rounded-md bg-[var(--gold-primary)] text-white
+                <!-- <button  class="px-3 py-1 text-xs rounded-md bg-[var(--gold-primary)] text-white
                    hover:bg-[var(--gold-secondary)] transition-colors shadow-sm cursor-pointer">
                   تعديل
-                </button>
-                <button (click)="deleteSlot(i)" class="px-3 py-1 text-xs rounded-md bg-[var(--green-primary)] text-white
+                </button> -->
+                <button (click)="deleteAvailability(slot.teacherAvailabilityId)" class="px-3 py-1 text-xs rounded-md bg-[var(--gold-primary)] text-white
                    hover:bg-[var(--green-dark)] transition-colors shadow-sm cursor-pointer">
                   حذف
                 </button>
@@ -225,67 +226,327 @@
             </tr>
           </tbody>
         </table>
+
+
       </div>
 
-      <!-- Add Modal -->
-      <div *ngIf="showAddModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-        <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
-          <!-- Close Button -->
-          <button (click)="closeAddModal()"
-            class=" absolute top-2 right-2 text-gray-500 hover:text-red-700 cursor-pointer">
-            <i class="fas fa-times"></i>
-          </button>
+      <!-- Add Availability Modal -->
+      <div *ngIf="showAddModal" class="fixed inset-0 flex items-center justify-center bg-black/80 ">
+        <div class="bg-white p-6 rounded-lg w-96">
+          <h2 class="text-lg font-bold mb-4">إضافة موعد جديد</h2>
 
-          <h3 class="text-lg font-semibold text-[var(--green-primary)] my-4">إضافة موعد جديد</h3>
+          <!-- اختيار اليوم -->
+          <label class="block mb-2">اليوم</label>
+          <select [(ngModel)]="newSlot.day" class="border rounded p-2 w-full">
+            <option [value]="DayOfWeek.Sunday">الأحد</option>
+            <option [value]="DayOfWeek.Monday">الاثنين</option>
+            <option [value]="DayOfWeek.Tuesday">الثلاثاء</option>
+            <option [value]="DayOfWeek.Wednesday">الأربعاء</option>
+            <option [value]="DayOfWeek.Thursday">الخميس</option>
+            <option [value]="DayOfWeek.Friday">الجمعة</option>
+            <option [value]="DayOfWeek.Saturday">السبت</option>
+          </select>
 
-          <!-- Form -->
-          <div class="space-y-4">
-            <!-- اليوم -->
-            <div>
-              <label class="block text-sm mb-1 text-[var(--text-secondary)]">اليوم</label>
-              <input [(ngModel)]="newSlot.day" type="date" class="w-full border border-[var(--gray-medium)] rounded-lg p-2.5 text-sm text-[var(--text-primary)]
-             bg-white shadow-sm
-             focus:outline-none focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-             transition-all duration-200">
-            </div>
+          <!-- وقت البداية -->
+          <label class="block mt-4 mb-2">بداية الوقت</label>
+          <input type="time" [(ngModel)]="newSlot.start" class="border rounded p-2 w-full" />
 
-            <!-- وقت البدء -->
-            <div>
-              <label class="block text-sm mb-1 text-[var(--text-secondary)]">وقت البدء</label>
-              <input [(ngModel)]="newSlot.start" type="time" class="w-full border border-[var(--gray-medium)] rounded-lg p-2.5 text-sm text-[var(--text-primary)]
-             bg-white shadow-sm
-             focus:outline-none focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-             transition-all duration-200">
-            </div>
+          <!-- وقت النهاية -->
+          <label class="block mt-4 mb-2">نهاية الوقت</label>
+          <input type="time" [(ngModel)]="newSlot.end" class="border rounded p-2 w-full" />
 
-            <!-- وقت الانتهاء -->
-            <div>
-              <label class="block text-sm mb-1 text-[var(--text-secondary)]">وقت الانتهاء</label>
-              <input [(ngModel)]="newSlot.end" type="time" class="w-full border border-[var(--gray-medium)] rounded-lg p-2.5 text-sm text-[var(--text-primary)]
-             bg-white shadow-sm
-             focus:outline-none focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-             transition-all duration-200">
-            </div>
-          </div>
-
-
-          <!-- Actions -->
-          <div class="mt-4 flex justify-end gap-2">
+          <!-- الأزرار -->
+          <div class="flex justify-end mt-6 gap-2">
             <button (click)="closeAddModal()"
-              class="px-3 py-1 text-sm rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors cursor-pointer">
-              إلغاء
-            </button>
+              class="px-4 py-2 bg-gray-300 hover:bg-[var(--text-secondary)] hover:text-white rounded cursor-pointer">إلغاء</button>
             <button (click)="saveNewSlot()"
-              class="px-3 py-1 text-sm rounded-md bg-[var(--gold-primary)] text-white hover:bg-[var(--gold-secondary)] transition-colors cursor-pointer">
-              حفظ
-            </button>
+              class="px-4 py-2 bg-[var(--gold-primary)] hover:bg-[var(--green-primary)] text-white rounded cursor-pointer">حفظ</button>
+          </div>
+        </div>
+
+        <!-- Loader يغطي الصفحة كلها -->
+        <div *ngIf="isLoading" class="absolute inset-0 flex items-center justify-center bg-white/80 z-50">
+          <div class="text-center">
+            <div
+              class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-[var(--green-primary)] border-t-transparent mb-4">
+            </div>
+            <p class="text-[var(--text-secondary)] text-lg font-medium">جارٍ تحميل البيانات...</p>
           </div>
         </div>
       </div>
 
 
 
+      <!-- Teacher Payouts Section -->
+      <div class="mt-8 border-t-2 pt-5 border-gray-200">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold text-[var(--green-primary)]">المدفوعات</h3>
+          <button (click)="getCompletedSessionByTeacherId()"
+            class="px-4 py-2 bg-[var(--gold-primary)] text-white rounded-lg hover:bg-[var(--green-primary)] cursor-pointer">
+            <i class="fas fa-plus"></i>
+            إضافة مدفوعات
+          </button>
+        </div>
+
+
+
+        <div class="overflow-x-auto rounded-lg shadow-sm border border-[var(--gray-medium)]">
+          <table class="min-w-full bg-white shadow ">
+            <thead class="bg-[var(--green-primary)] text-white">
+              <tr>
+                <!-- <th class="px-4 py-2 text-left">المدرس</th> -->
+                <th class="px-4 py-2">تاريخ الدفع</th>
+                <th class="px-4 py-2">إجمالي الساعات</th>
+                <th class="px-4 py-2">المبلغ</th>
+                <th class="px-4 py-2">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr *ngIf="teacherPayouts.length === 0">
+                <td colspan="5" class="text-center py-8">
+                  <!-- أيقونة SVG -->
+                  <svg class="mx-auto mb-2 w-12 h-12 text-gray-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 17v-2a4 4 0 118 0v2m-4 0v2m0-10a4 4 0 100-8 4 4 0 000 8z" />
+                  </svg>
+                  <span class="text-gray-500 text-lg">لا يوجد مدفوعات</span>
+                </td>
+              </tr>
+
+              <ng-container *ngIf="teacherPayouts.length > 0">
+                <tr *ngFor="let payout of paginatedPayouts" class="hover:bg-gray-50">
+                  <td class="px-4 py-2 text-center">{{ payout.paidAt | date:'mediumDate' }}</td>
+                  <td class="px-4 py-2 text-center">{{ payout.totalHours }}</td>
+                  <td class="px-4 py-2 text-center">{{ payout.totalAmount | currency:'EGP' }}</td>
+                  <td class="px-4 py-2 text-center">
+                    <button (click)="openDetails(payout)"
+                      class="px-3 py-1 bg-[var(--green-primary)] text-white rounded-lg hover:bg-green-700 cursor-pointer">
+                      التفاصيل
+                    </button>
+                  </td>
+                </tr>
+
+              </ng-container>
+            </tbody>
+          </table>
+
+          <div dir="rtl" class="bg-[var(--background-primary)] shadow-sm mt-6 px-6 py-4 rounded-lg"
+            *ngIf="teacherPayouts.length > 0">
+
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+
+              <!-- أزرار التحكم -->
+              <div class="flex items-center gap-2">
+                <!-- الأول -->
+                <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+                  class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7">
+                    </path>
+                  </svg>
+                </button>
+
+                <!-- السابق -->
+                <button (click)="previousPage()" [disabled]="currentPage === 1"
+                  class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+
+                <!-- الصفحات -->
+                <div class="flex items-center gap-1">
+                  <button *ngFor="let page of getVisiblePages()" (click)="goToPage(page)"
+                    [class.bg-[var(--green-primary)]]="page === currentPage" [class.text-white]="page === currentPage"
+                    class="w-8 h-8 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 text-sm font-medium transition-colors text-[var(--text-primary)]">
+                    {{ page }}
+                  </button>
+                </div>
+
+                <!-- التالي -->
+                <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                  class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                  </svg>
+                </button>
+
+                <!-- الأخير -->
+                <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+                  class="p-2 rounded-lg border cursor-pointer border-[var(--gray-medium)] hover:bg-[var(--gold-secondary)] hover:bg-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[var(--text-primary)]">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 19l-7-7 7-7m8 14l-7-7 7-7">
+                    </path>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- النص -->
+              <div class="text-sm text-[var(--text-secondary)]">
+                عرض {{ getShowingRange() }} من أصل {{ totalCount }} من المدفوعات
+              </div>
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- Modal للدفع  -->
+      <div *ngIf="showPayoutModal" class="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
+
+        <!-- Modal Content -->
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 relative">
+          <button (click)="closeModalPayout()"
+            class="absolute top-2 right-2 text-black font-bold cursor-pointer">X</button>
+
+          <!-- معلومات المعلم -->
+          <div *ngIf="completedSessions.length">
+            <div class="flex items-center gap-4 mb-4">
+              <img [src]="teacher.profileImg" alt="{{teacher.firstName +' '+teacher.lastName }}"
+                class="w-20 h-20 rounded-full border border-black object-cover">
+              <div>
+                <h2 class="text-lg font-bold text-black">{{ teacher.firstName +' '+teacher.lastName}}</h2>
+                <p class="text-sm">تاريخ الدفع: {{ paymentDate }}</p>
+                <p class="text-sm">إجمالي الساعات: {{ totalDuration }}</p>
+                <p class="text-sm font-semibold">المبلغ الكلي: {{ totalAmount | currency:'EGP' }}</p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-black mb-1">اختر صورة إثبات الدفع</label>
+              <input type="file" accept="image/*" (change)="onFileSelected($event)"
+                class="border border-black rounded px-2 py-1 w-full" />
+            </div>
+
+            <!-- زر الدفع -->
+            <button
+              class="bg-[var(--gold-primary)] hover:bg-[var(--green-primary)] cursor-pointer text-white px-4 py-2 rounded mb-4"
+              (click)="payNow()">
+              ادفع الآن
+            </button>
+
+            <!-- جدول الجلسات -->
+            <div class="overflow-x-auto border border-black rounded-lg">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="border-b border-black bg-gray-100">
+                    <th class="px-4 py-2 border border-black">ID الجلسة</th>
+                    <th class="px-4 py-2 border border-black">ID الاشتراك</th>
+                    <th class="px-4 py-2 border border-black">التاريخ</th>
+                    <th class="px-4 py-2 border border-black">المدة (دقائق)</th>
+                    <th class="px-4 py-2 border border-black">حالة الحصة</th>
+                    <th class="px-4 py-2 border border-black">المبلغ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let session of completedSessions" class="border-b border-black">
+                    <td class="px-4 py-2 border border-black">{{ session.id }}</td>
+                    <td class="px-4 py-2 border border-black">{{ session.enrollmentId }}</td>
+                    <td class="px-4 py-2 border border-black">{{ session.startTime | date:'short' }}</td>
+                    <td class="px-4 py-2 border border-black">{{ session.duration * 60 }}</td>
+                    <td class="px-4 py-2 border border-black">{{ getSessionStatusLabel(session.status) }}</td>
+                    <td class="px-4 py-2 border border-black">{{ session.amount | currency:'EGP' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
     </div>
   </div>
+
+
+
+
+
+  <!-- Modal للتفاصيل  -->
+  <div *ngIf="showPayoutModalDetails"
+    class=" fixed inset-0 flex items-center justify-center bg-black/80 z-50 print:static print:bg-white">
+    <div
+      class="modal-content bg-white rounded-lg shadow-lg   max-w-none p-6 relative print:shadow-none print:border print:border-black overflow-auto">
+      <!-- Close Button -->
+      <button (click)="closeModal()" class="absolute top-3 right-3 text-black print:hidden cursor-pointer">
+        ✖
+      </button>
+
+
+
+
+      <!-- Teacher Info -->
+      <div *ngIf="selectedPayout">
+        <div class="flex items-center gap-8 mb-4">
+          <img [src]="selectedPayout.teacherImage" alt="{{selectedPayout.teacherName}}"
+            class="w-16 h-16 rounded-full border border-black">
+
+
+          <div>
+            <h2 class="text-lg font-bold text-black">{{ selectedPayout.teacherName }}</h2>
+            <p class="text-sm">تاريخ الدفع: {{ selectedPayout.paidAt | date:'medium' }}</p>
+            <p class="text-sm">إجمالي الساعات: {{ selectedPayout.totalHours }}</p>
+            <p class="text-sm font-semibold">المبلغ: {{ selectedPayout.totalAmount | currency:'EGP' }}</p>
+          </div>
+
+
+        </div>
+        <img [src]="selectedPayout.imageUrl" alt="{{selectedPayout.teacherName}}" class="w-100 border border-black ">
+
+        <!-- Sessions Table -->
+        <div *ngIf="selectedPayout.sessions?.length">
+          <h4 class="text-md font-semibold mb-2 text-black">الجلسات</h4>
+
+          <div class="overflow-x-auto border border-black rounded-lg">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b border-black bg-gray-100">
+                  <th class="px-4 py-2 border border-black">ID الجلسة</th>
+                  <th class="px-4 py-2 border border-black">ID الاشتراك</th>
+                  <th class="px-4 py-2 border border-black">التاريخ</th>
+                  <th class="px-4 py-2 border border-black">المدة (دقائق)</th>
+                  <th class="px-4 py-2 border border-black">حالة الحصة</th>
+                  <th class="px-4 py-2 border border-black">المبلغ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let session of selectedPayout?.sessions" class="border-b border-black">
+                  <td class="px-4 py-2 border border-black">{{ session.id }}</td>
+                  <td class="px-4 py-2 border border-black">{{ session.enrollmentId }}</td>
+                  <td class="px-4 py-2 border border-black">{{ session.startTime | date:'short' }}</td>
+                  <td class="px-4 py-2 border border-black">{{ session.duration * 60 }}</td>
+                  <td class="px-4 py-2 border border-black">{{ getSessionStatusLabel(session.status) }}</td>
+                  <td class="px-4 py-2 border border-black">{{ session.amount | currency:'EGP' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<!-- Toast message -->
+<div *ngIf="showMessage" [ngClass]="{
+           'bg-green-500': messageType==='success',
+           'bg-red-500': messageType==='error'
+         }"
+  class="text-white z-10 px-4 py-2 rounded-md absolute top-80 left-1/2 transform -translate-x-1/2 shadow-lg text-2xl">
+  {{ message }}
 </div>

@@ -25,4 +25,8 @@ export class SessionService {
     return this.http.post(`${env.baseApi}Session/CreateSession`, session);
   }
 
+    getCompletedSessionByTeacherId(id: string): Observable<any> {
+    return this.http.get(`${env.baseApi}Session/GetCompletedSessionsByTeacherId/${id}`);
+  }
+
 }

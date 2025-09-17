@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { StudentRegisterComponent } from './students/studentRegister/studentRegister.component';
-import { DashboardlayoutComponent } from './dashboardlayout/dashboardlayout.component';
 import { TeacherRegisterComponent } from './teachers/teacherRegister/teacherRegister.component';
 import { TeacherListComponent } from './teachers/teacherList/teacherList.component';
 import { CoreLayoutComponent } from '../core/coreLayout/coreLayout.component';
@@ -12,6 +11,8 @@ import { EnrollmentCreateComponent } from './enrollments/enrollmentCreate/enroll
 import { EnrollmentListComponent } from './enrollments/enrollmentList/enrollmentList.component';
 import { EnrollmentDetailsComponent } from './enrollments/enrollmentDetails/enrollmentDetails.component';
 import { SessionsDetailsComponent } from './sessions/sessionsDetails/sessionsDetails.component';
+import { DashboardAnalysisComponent } from './dashboard/DashboardAnalysis/DashboardAnalysis.component';
+import { AdminGuard } from '../core/guards/admin-guard';
 
 
 // const routes: Routes = [
@@ -27,7 +28,10 @@ import { SessionsDetailsComponent } from './sessions/sessionsDetails/sessionsDet
 const routes: Routes = [
 
   {
-    path: 'dashboard', component: CoreLayoutComponent, children: [
+    path: 'dashboard', canActivate: [AdminGuard], component: CoreLayoutComponent, children: [
+      {
+        path: '', component: DashboardAnalysisComponent
+      },
       {
         path: 'students', children: [
           { path: 'register-student', component: StudentRegisterComponent },

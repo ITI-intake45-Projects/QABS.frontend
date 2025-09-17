@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { DashboardRoutesModule } from './dashboard-routes.module';
 import { StudentRegisterComponent } from './students/studentRegister/studentRegister.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DashboardlayoutComponent } from './dashboardlayout/dashboardlayout.component';
 import { TeacherRegisterComponent } from './teachers/teacherRegister/teacherRegister.component';
 import { TeacherListComponent } from './teachers/teacherList/teacherList.component';
 import { StudentListComponent } from './students/studentList/studentList.component';
@@ -19,6 +18,11 @@ import localeAr from '@angular/common/locales/ar';
 import { registerLocaleData } from '@angular/common';
 import { EnrollmentDetailsComponent } from './enrollments/enrollmentDetails/enrollmentDetails.component';
 import { SessionsDetailsComponent } from './sessions/sessionsDetails/sessionsDetails.component';
+import { StudentDetailsComponent } from './students/studentDetails/studentDetails.component';
+import { DashboardAnalysisComponent } from './dashboard/DashboardAnalysis/DashboardAnalysis.component';
+import { NgApexchartsModule } from "ng-apexcharts";
+
+
 
 
 
@@ -34,7 +38,9 @@ registerLocaleData(localeAr);
     NgxMaterialTimepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    NgApexchartsModule
+
 
 
 
@@ -42,20 +48,22 @@ registerLocaleData(localeAr);
   declarations: [
     StudentRegisterComponent,
     StudentListComponent,
-    DashboardlayoutComponent,
+    StudentDetailsComponent,
     TeacherRegisterComponent,
     TeacherListComponent,
     EnrollmentCreateComponent,
     EnrollmentListComponent,
     EnrollmentDetailsComponent,
-    SessionsDetailsComponent
+    SessionsDetailsComponent,
+    DashboardAnalysisComponent
   ],
   exports: [
-    DashboardlayoutComponent
+
   ],
     providers: [
     // { provide: NGX_MAT_TIMEPICKER_LOCALE, useValue: 'ar-EG' }
-        { provide: LOCALE_ID, useValue: 'ar-EG' }
+        { provide: LOCALE_ID, useValue: 'ar-EG' },
+        DatePipe
 
   ]
 })

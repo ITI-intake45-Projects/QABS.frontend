@@ -4,6 +4,7 @@ import { StudentService } from '../../../core/services/student.service';
 import { Gender } from '../../../core/models/Enums/Gender.enum';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/Account.service';
+import { StudentListMoreInfo } from '../../../core/models/Details/StudentListMoreInfo';
 
 @Component({
   selector: 'app-studentList',
@@ -13,7 +14,7 @@ import { AccountService } from '../../../core/services/Account.service';
 })
 export class StudentListComponent implements OnInit {
 
-  students: Student[] = [];
+  students: StudentListMoreInfo[] = [];
   currentPage = 1;
   pageSize = 10;
   totalPages: number = 0;
@@ -26,7 +27,7 @@ export class StudentListComponent implements OnInit {
   ];
 
   // modal states (simulate)
-  selectedStudent?: Student;
+  selectedStudent?: StudentListMoreInfo;
   showViewModal = false;
   showEditModal = false;
 
@@ -108,17 +109,17 @@ export class StudentListComponent implements OnInit {
   // }
 
   // trackBy for ngFor
-  trackByStudentId(index: number, student: Student): string {
+  trackByStudentId(index: number, student: StudentListMoreInfo): string {
     return student.studentId;
   }
 
   // ===== CRUD ACTIONS =====
-  viewStudent(student: Student) {
+  viewStudent(student: StudentListMoreInfo) {
     this.selectedStudent = student;
     this.showViewModal = true;
   }
 
-  editStudent(student: Student) {
+  editStudent(student: StudentListMoreInfo) {
     this.selectedStudent = { ...student }; // copy to edit
     this.showEditModal = true;
   }
@@ -132,20 +133,20 @@ export class StudentListComponent implements OnInit {
     this.showEditModal = false;
   }
 
-  // deleteStudent(student: Student) {
-  //   if (confirm(`Are you sure you want to delete ${student.firstName} ${student.lastName}?`)) {
-  //     this.students = this.students.filter(s => s.studentId !== student.studentId);
-  //   }
-  // }
+  deleteStudent(student: StudentListMoreInfo) {
+    if (confirm(`Are you sure you want to delete ${student.fullName}?`)) {
+      this.students = this.students.filter(s => s.studentId !== student.studentId);
+    }
+  }
 
 
 
   // modal delete state
   showDeleteModal = false;
-  studentToDelete?: Student;
+  studentToDelete?: StudentListMoreInfo;
   isLoading = false;
 
-  openDeleteModal(student: Student, event: MouseEvent) {
+  openDeleteModal(student: StudentListMoreInfo, event: MouseEvent) {
     event.stopPropagation(); // عشان مايفتحش تفاصيل الطالب
     this.studentToDelete = student;
     this.showDeleteModal = true;

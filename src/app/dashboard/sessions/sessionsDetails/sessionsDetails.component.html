@@ -1,4 +1,4 @@
-<div class="p-6 md:p-10 lg:p-12 min-h-screen bg-[var(--background-secondary)] text-[var(--text-primary)]">
+<div class="p-6 md:p-10 lg:p-12 min-h-screen  text-[var(--text-primary)]">
 
   <!-- Page Title -->
   <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-1 text-[var(--text-primary)]">
@@ -56,7 +56,7 @@
         <table class="w-full border-collapse">
           <thead class="sticky top-0 z-10 bg-[var(--green-secondary)] text-white shadow-sm">
             <tr>
-              <th class="px-4 md:px-6 py-4 text-center font-bold text-sm md:text-base">#</th>
+              <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">#</th>
               <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">الطالب</th>
               <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">المعلم</th>
               <th class="px-4 md:px-6 py-4 text-right font-bold text-sm md:text-base">موعد الحصة</th>
@@ -137,6 +137,8 @@
       </div>
     </div>
 
+
+    <!-- pagination -->
     <div dir="rtl" class="bg-[var(--background-primary)] shadow-sm mt-6 px-6 py-4 rounded-lg"
       *ngIf="sessions.length > 0">
       <div class="flex flex-col sm:flex-row justify-between items-center gap-4">

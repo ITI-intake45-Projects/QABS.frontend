@@ -1,0 +1,93 @@
+<div *ngIf="!isLoading" class="p-6 space-y-8 h-screen overflow-auto">
+  <!-- KPIs -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-gray-500 text-sm">إجمالي الطلاب</h3>
+      <p class="text-2xl font-bold text-green-600">{{ dashboardData.totalStudents }}</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-gray-500 text-sm">إجمالي المعلمين</h3>
+      <p class="text-2xl font-bold text-blue-600">{{ dashboardData.totalTeachers }}</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-gray-500 text-sm">الاشتراكات النشطة</h3>
+      <p class="text-2xl font-bold text-purple-600">{{ dashboardData.activeEnrollments }}</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-gray-500 text-sm">إجمالي الإيرادات</h3>
+      <p class="text-2xl font-bold text-orange-600">{{ dashboardData.totalRevenue }}</p>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-xl font-semibold mb-4">منحنى الاشتراكات</h3>
+      <!-- Line chart -->
+      <div class="h-100 w-full flex items-center justify-center text-gray-400">
+        <apx-chart *ngIf="chartOptions" [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+          [xaxis]="chartOptions.xaxis!" [stroke]="chartOptions.stroke!" [dataLabels]="chartOptions.dataLabels!"
+          [grid]="chartOptions.grid!" [tooltip]="chartOptions.tooltip!" class="w-full h-full"></apx-chart>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-lg font-semibold mb-4">الإيرادات مقابل مدفوعات المعلمين</h3>
+      <!-- Bar chart -->
+      <div class="h-64 flex items-center justify-center text-gray-400">[رسم بياني بالأعمدة]</div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-lg font-semibold mb-4">الجلسات حسب الحالة</h3>
+      <!-- Pie chart -->
+      <div class="h-64 flex items-center justify-center text-gray-400">[مخطط دائري]</div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-lg font-semibold mb-4">الطلاب حسب الخطة</h3>
+      <!-- Bar chart -->
+      <div class="h-64 flex items-center justify-center text-gray-400">[رسم بياني بالأعمدة]</div>
+    </div>
+  </div>
+
+  <!-- Latest Tables -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-lg font-semibold mb-4">أحدث الطلاب</h3>
+      <ul class="divide-y">
+        <li class="py-2 flex justify-between">
+          <span>أحمد علي</span>
+          <span class="text-gray-500 text-sm">تاريخ الانضمام: 2025-09-10</span>
+        </li>
+        <li class="py-2 flex justify-between">
+          <span>سارة محمد</span>
+          <span class="text-gray-500 text-sm">تاريخ الانضمام: 2025-09-08</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-4">
+      <h3 class="text-lg font-semibold mb-4">أحدث المدفوعات</h3>
+      <ul class="divide-y">
+        <li class="py-2 flex justify-between">
+          <span>عمر خالد</span>
+          <span class="text-green-600 font-bold">١٢٠ ر.س</span>
+        </li>
+        <li class="py-2 flex justify-between">
+          <span>ليلى حسن</span>
+          <span class="text-green-600 font-bold">٢٠٠ ر.س</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Loader spinning -->
+<div class="max-w-8xl mx-auto min-h-[300px] flex items-center justify-center" *ngIf="isLoading">
+  <div class="text-center">
+    <div
+      class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-[var(--green-primary)] border-t-transparent mb-4">
+    </div>
+    <p class="text-[var(--text-secondary)] text-lg font-medium">جارٍ تحميل البيانات...</p>
+  </div>
+</div>
