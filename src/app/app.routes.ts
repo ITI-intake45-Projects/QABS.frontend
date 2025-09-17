@@ -11,16 +11,17 @@ export const routes: Routes = [
 
 
   { path: 'register', component: RegisterComponent },
-
-  { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
+
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  
+  { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard-routes.module').then(m => m.DashboardRoutesModule) },
+  
+    // wildcard route for 404
+  { path: '**', redirectTo: 'login' }
+  
   // { path: 'dashboardd', component: DashboardAnalysisComponent },
   // { path: 'sidebar', component: SidebarComponent },
-
-  { path: '', canActivate: [AdminGuard], loadChildren: () => import('./dashboard/dashboard-routes.module').then(m => m.DashboardRoutesModule) },
-
-
-
 ];
 
 

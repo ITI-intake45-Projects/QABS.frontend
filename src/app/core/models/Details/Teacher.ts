@@ -10,6 +10,7 @@ export interface Teacher {
   gender: Gender;
   age: number;
   profileImg?: string;
+  phoneNumber?: string;
   dateCreated?: string;
   hourlyRate?: number;
   lastLoginDate?: string;

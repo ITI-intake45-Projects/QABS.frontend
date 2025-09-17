@@ -1,211 +1,111 @@
-<div class="flex justify-center max-h-screen pb-10 ">
-  <div class="w-full max-w-3xl bg-[var(--background-primary)] shadow-2xl rounded-2xl border-2 border-[var(--gold-primary)] p-8 relative space-y-8">
-    <div>
-      <!-- Logo -->
-      <!-- <div class="flex justify-center mb-6"></div> -->
+<div class="flex justify-center max-h-screen pb-10"> 
 
-      <!-- Welcome text -->
+
+  <div class="w-full max-w-3xl h-screen overflow-auto bg-[var(--background-primary)] shadow-2xl rounded-2xl border-2 border-[var(--gold-primary)] p-8 relative space-y-8">
+    
+    <!-- Header -->
+    <div>
       <h1 class="text-2xl font-bold text-[var(--green-dark)] text-center flex items-center justify-center gap-2">
         <i class="fa-solid fa-user text-[var(--gold-primary)]"></i>
         إنشاء حساب جديد
       </h1>
       <p class="text-[var(--text-secondary)] text-center mt-2">
         لديك حساب بالفعل؟
-        <a class="text-[var(--gold-primary)] hover:text-[var(--gold-secondary)] font-medium">
+        <a class="text-[var(--gold-primary)] hover:text-[var(--gold-secondary)] font-medium cursor-pointer">
           سجّل دخولك
         </a>
       </p>
     </div>
 
-    <form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="max-w-lg mx-auto space-y-5 bg-white mb-10   ">
-      <!-- First Name -->
+    <!-- FORM -->
+    <form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <!-- First + Last Name -->
       <div class="grid md:grid-cols-2 md:gap-4">
-        <div class="relative z-0 w-full mb-5 group">
-          <label for="floating_first_name" class="block text-sm font-medium text-[var(--text-primary)] mb-1">الاسم
-            الأول<span class="text-xl text-red-500">*</span></label>
-
-          <input type="text" name="floating_first_name" id="first_name" formControlName="FirstName" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " required />
-          <div *ngIf="formControls['FirstName'].touched && formControls['FirstName'].invalid"
-            class="text-red-600 text-sm mt-1">
+        <!-- First Name -->
+        <div class="relative w-full">
+          <label for="first_name" class="block text-sm font-medium text-[var(--text-primary)] mb-1">الاسم الأول<span class="text-red-500">*</span></label>
+          <input type="text" id="first_name" formControlName="FirstName" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
+          <div *ngIf="formControls['FirstName'].touched && formControls['FirstName'].invalid" class="text-red-600 text-sm mt-1">
             <span *ngIf="formControls['FirstName'].errors?.['required']">الاسم الأول مطلوب</span>
-            <span *ngIf="formControls['FirstName'].errors?.['minlength']">الاسم الأول يجب أن يكون على الأقل 2
-              أحرف</span>
           </div>
-
         </div>
-
-
 
         <!-- Last Name -->
-        <div class="relative z-0 w-full mb-5 group">
-          <label for="floating_last_name" class="block text-sm font-medium text-[var(--text-primary)] mb-1">الاسم
-            الأخير<span class="text-xl text-red-500">*</span></label>
-
-          <input type="text" name="floating_last_name" id="last_name" formControlName="LastName" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " required />
-
-          <div *ngIf="formControls['LastName'].touched && formControls['LastName'].invalid"
-            class="text-red-600 text-sm mt-1">
+        <div class="relative w-full">
+          <label for="last_name" class="block text-sm font-medium text-[var(--text-primary)] mb-1">الاسم الأخير<span class="text-red-500">*</span></label>
+          <input type="text" id="last_name" formControlName="LastName" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
+          <div *ngIf="formControls['LastName'].touched && formControls['LastName'].invalid" class="text-red-600 text-sm mt-1">
             <span *ngIf="formControls['LastName'].errors?.['required']">الاسم الأخير مطلوب</span>
-            <span *ngIf="formControls['LastName'].errors?.['minlength']">الاسم الأخير يجب أن يكون على الأقل 2
-              أحرف</span>
           </div>
-
         </div>
       </div>
 
-
-      <div class="relative z-0 w-full mb-5 group">
-        <label for="floating_email" class="block text-sm font-medium text-[var(--text-primary)] mb-1">البريد
-          الإلكتروني<span class="text-xl text-red-500">*</span></label>
-
-        <input type="email" name="floating_email" id="Email" formControlName="Email" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " required />
-
-        <div *ngIf="formControls['Email'].touched && formControls['Email'].invalid" class="text-red-600 text-sm mt-1">
-          <span *ngIf="formControls['Email'].errors?.['required']">البريد الإلكتروني مطلوب</span>
-          <span *ngIf="formControls['Email'].errors?.['email']">أدخل بريدًا إلكترونيًا صالحًا</span>
-        </div>
-
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-[var(--text-primary)] mb-1">البريد الإلكتروني<span class="text-red-500">*</span></label>
+        <input type="email" id="email" formControlName="Email" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
       </div>
 
-      <!-- password -->
-      <div class="relative z-0 w-full mb-5 group">
-        <label for="floating_password" class="block text-sm font-medium text-[var(--text-primary)] mb-1">كلمة
-          المرور<span class="text-xl text-red-500">*</span></label>
-
-        <input type="password" name="floating_password" id="password" formControlName="Password" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " required />
-
-        <div *ngIf="formControls['Password'].touched && formControls['Password'].invalid"
-          class="text-red-600 text-sm mt-1">
-          <span *ngIf="formControls['Password'].errors?.['required']">كلمة المرور مطلوبة</span>
-          <span *ngIf="formControls['Password'].errors?.['minlength']">يجب أن تكون كلمة المرور 6 أحرف على الأقل</span>
-        </div>
-
+      <!-- Password -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-[var(--text-primary)] mb-1">كلمة المرور<span class="text-red-500">*</span></label>
+        <input type="password" id="password" formControlName="Password" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
       </div>
 
-      <div class="grid md:grid-cols-3 md:gap-6">
-
+      <!-- Gender / Age / HourlyRate -->
+      <div class="grid md:grid-cols-3 md:gap-4">
         <!-- Gender -->
-        <div class="relative z-20 w-full mb-5 group">
-          <!-- Floating Label Dropdown -->
-          <div class="relative">
-            <label for="gender" class="block text-sm font-medium text-[var(--text-primary)] mb-1">
-              النوع<span class="text-xl text-red-500">*</span>
+        <div>
+          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">النوع<span class="text-red-500">*</span></label>
+          <input type="text" readonly [value]="selectedGenderLabel" (click)="toggleDropdown()" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)] cursor-pointer" />
+          <div *ngIf="dropdownOpen" class="absolute mt-1 bg-white w-full rounded-lg shadow-md z-20">
+            <label *ngFor="let g of genders" class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+              <input type="radio" [value]="g.id" (change)="selectGender(g.id)" [checked]="formControls['Gender'].value === g.id" />
+              <span class="ml-2">{{ g.label }}</span>
             </label>
-            <input type="text" readonly [value]="selectedGenderLabel" (click)="toggleDropdown()" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " />
-
-            <!-- Floating Label -->
-
-            <!-- Dropdown -->
-            <div *ngIf="dropdownOpen"
-              class="absolute z-10 mt-1 bg-white divide-y divide-gray-100 rounded-lg w-full shadow-md">
-              <label *ngFor="let g of genders"
-                class="flex items-center px-4 py-2 cursor-pointer gap-2 hover:bg-gray-100">
-                <input type="radio" name="gender" [value]="g.id" [checked]="formControls['Gender'].value === g.id"
-                  (change)="selectGender(g.id)" class="h-4 w-4 text-[var(--green-primary)] mr-2">
-                <span class="text-[var(--green-primary)] text-xl font-bold">{{ g.label }}</span>
-              </label>
-            </div>
           </div>
         </div>
-
-
 
         <!-- Age -->
-        <div class="relative z-0 w-full mb-5 group">
-          <label for="floating_age" class="block text-sm font-medium text-[var(--text-primary)] mb-1">العمر<span
-              class="text-xl text-red-500">*</span></label>
-          <input type="number" name="floating_age" id="floating_age" formControlName="Age" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " required />
-
-          <div *ngIf="formControls['Age'].touched && formControls['Age'].invalid" class="text-red-600 text-sm mt-1">
-            <span *ngIf="formControls['Age'].errors?.['required']">العمر مطلوب</span>
-            <span *ngIf="formControls['Age'].errors?.['min']">يجب أن يكون العمر 1 على الأقل</span>
-          </div>
-
+        <div>
+          <label for="age" class="block text-sm font-medium text-[var(--text-primary)] mb-1">العمر<span class="text-red-500">*</span></label>
+          <input type="number" id="age" formControlName="Age" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
         </div>
 
-        <div class="relative z-0 w-full mb-5 group">
-          <!-- Hourly Rate  -->
-
-          <!-- Label -->
-          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">
-            تكلفة الساعة<span class="text-xl text-red-500">*</span>
-          </label>
-          <input type="number" formControlName="HourlyRate" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder=" " />
-
-          <!-- Validation -->
-          <div *ngIf="formControls['HourlyRate']?.touched && formControls['HourlyRate']?.invalid"
-            class="text-red-600 text-sm mt-1">
-            <!-- <span *ngIf="formControls['HourlyRate']?.errors?.['required']">تكلفة الساعة مطلوبة</span> -->
-          </div>
+        <!-- HourlyRate -->
+        <div>
+          <label class="block text-sm font-medium text-[var(--text-primary)] mb-1">تكلفة الساعة<span class="text-red-500">*</span></label>
+          <input type="number" formControlName="HourlyRate" class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]" />
         </div>
       </div>
 
-      <!-- specializations -->
-
-      <!-- Input-like box to show selected items -->
+      <!-- Specialization -->
       <div class="relative">
-        <div class=" w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
-                        focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
-                        text-[var(--text-primary)] placeholder-[var(--gray-dark)]"
-          (click)="toggleDropdownSpecialization()">
-          <span *ngIf="selectedSpecializations.length === 0" class="text-gray-400">
-            اختر التخصص
-          </span>
-          <span *ngIf="selectedSpecializations.length > 0">
-            {{ selectedSpecializationsLabels }}
-          </span>
+        <div class="w-full px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm cursor-pointer" (click)="toggleDropdownSpecialization()">
+          <span *ngIf="selectedSpecializations.length === 0" class="text-gray-400">اختر التخصص</span>
+          <span *ngIf="selectedSpecializations.length > 0">{{ selectedSpecializationsLabels }}</span>
         </div>
-
-
-        <!-- Dropdown with checkboxes -->
-        <div *ngIf="dropdownSpecializationOpen"
-          class="absolute z-10 mt-1 bg-white divide-y divide-gray-100 rounded-lg shadow-sm ">
-          <label *ngFor="let s of specializations" class="flex items-center px-5 py-3 cursor-pointer hover:bg-gray-100">
-            <input type="checkbox" [value]="s.id" (change)="onSpecializationChange($event)"
-              [checked]="isSpecializationSelected(s.id)"
-              class="h-4 w-4 text-[var(--green-primary)]  border-gray-300 rounded ml-3">
-            <span class="text-[var(--green-primary)] text-xl font-bold">{{ s.label }}</span>
+        <div *ngIf="dropdownSpecializationOpen" class="absolute mt-1 bg-white w-full rounded-lg shadow-md z-20">
+          <label *ngFor="let s of specializations" class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+            <input type="checkbox" [value]="s.id" (change)="onSpecializationChange($event)" [checked]="isSpecializationSelected(s.id)" />
+            <span class="ml-2">{{ s.label }}</span>
           </label>
         </div>
       </div>
 
+      <!-- File Upload -->
+      <div>
+        <label class="block text-sm font-medium mb-2">حمل صورة</label>
+        <input formControlName="ImageFile" type="file" (change)="onFileChange($event)" class="block w-full text-sm border border-gray-300 rounded-lg cursor-pointer bg-gray-50" />
+        <p class="text-sm text-gray-500 mt-1">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+      </div>
 
-
-
-      <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">حمل صورة</label>
-      <input formControlName="ImageFile"
-        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
-        id="file_input" type="file" (change)="onFileChange($event)" />
-
-
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX.
-        800x400px).
-      </p>
-
-
-
-      <!-- Submit Button -->
-      <button type="submit" [disabled]="isLoading" class="w-full h-12 cursor-pointer bg-[var(--green-darker)] hover:bg-[var(--green-primary)] disabled:bg-gray-400 disabled:cursor-not-allowed
-                     text-white font-semibold py-2 px-4 rounded-lg shadow-md flex items-center justify-center gap-2
-                     focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[var(--gold-primary)] transition">
-        <ng-container *ngIf="!isLoading">تسجيل </ng-container>
+      <!-- Submit -->
+      <button type="submit" [disabled]="isLoading" class="w-full h-12 bg-[var(--green-darker)] hover:bg-[var(--green-primary)] text-white font-semibold rounded-lg shadow-md flex items-center justify-center gap-2">
+        <ng-container *ngIf="!isLoading">تسجيل</ng-container>
         <ng-container *ngIf="isLoading">
-          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-            viewBox="0 0 24 24">
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
           </svg>
@@ -215,5 +115,8 @@
 
     </form>
 
+    
   </div>
+
+
 </div>
