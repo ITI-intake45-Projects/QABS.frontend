@@ -28,7 +28,7 @@ import { AdminGuard } from '../core/guards/admin-guard';
 const routes: Routes = [
 
   {
-    path: 'dashboard',  component: CoreLayoutComponent, children: [
+    path: 'dashboard', canActivate:[AdminGuard],  component: CoreLayoutComponent, children: [
       {
         path: '', component: DashboardAnalysisComponent
       },

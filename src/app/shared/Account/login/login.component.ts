@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/Account.service';
 import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private router: Router,
     private accountService: AccountService,
+    private cookieService: CookieService,
      private toastr: ToastrService
   ) {}
 
@@ -65,6 +67,9 @@ export class LoginComponent {
             );
         }
         console.log('✅ Login successful:', res);
+        this.cookieService.set('Token', res.token);
+        this.cookieService.set('Role', res.role);
+
         this.isLoading = false;
         this.router.navigate(['/dashboard']);
       },
