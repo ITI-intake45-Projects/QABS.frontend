@@ -46,6 +46,7 @@ export class TeacherRegisterComponent implements OnInit {
       FirstName: ['', [Validators.required, Validators.minLength(2)]],
       LastName: ['', [Validators.required, Validators.minLength(2)]],
       Email: ['', [Validators.email]],
+      PhoneNumber: ['', [Validators.required]],
       Password: ['Test@123', [Validators.required, Validators.minLength(6)]],
       Gender: ['', Validators.required],
       Age: [null, [Validators.required]],
@@ -182,6 +183,7 @@ previewUrl: string | ArrayBuffer | null = null;
   onSubmit() {
     this.isLoading = true;
     console.log(this.userRegisterForm.value);
+    console.log('valid?', this.userRegisterForm.valid);
     if (this.userRegisterForm.valid) {
       const formData = new FormData();
 
@@ -190,6 +192,7 @@ previewUrl: string | ArrayBuffer | null = null;
       formData.append('FirstName', formValue.FirstName);
       formData.append('LastName', formValue.LastName);
       if (formValue.Email) formData.append('Email', formValue.Email);
+      if (formValue.PhoneNumber) formData.append('PhoneNumber', formValue.PhoneNumber);
       formData.append('Password', formValue.Password);
       formData.append('Gender', formValue.Gender.toString());
       formData.append('Age', formValue.Age.toString());

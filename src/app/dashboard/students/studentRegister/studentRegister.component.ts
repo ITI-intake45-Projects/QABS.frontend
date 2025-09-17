@@ -46,6 +46,7 @@ export class StudentRegisterComponent implements OnInit {
       FirstName: ['', [Validators.required, Validators.minLength(2)]],
       LastName: ['', [Validators.required, Validators.minLength(2)]],
       Email: ['', [Validators.email]],
+      PhoneNumber: ['', [Validators.required]],
       Password: ['Test@123', [Validators.required, Validators.minLength(6)]],
       Gender: ['', Validators.required],
       Age: [null, [Validators.required]],
@@ -110,32 +111,7 @@ export class StudentRegisterComponent implements OnInit {
     return this.selectedSpecializations.includes(id);
   }
 
-  // onFileChange(event: any) {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     this.selectedFile = file;
-  //     this.userRegisterForm.patchValue({ ImageFile: file });
-  //   }
-  // }
 
-  //  File Input
-  // previewUrl: string | ArrayBuffer | null = null;
-  // onFileChange(event: Event): void {
-  //   const input = event.target as HTMLInputElement;
-  //   if (input.files && input.files.length > 0) {
-  //     const file = input.files[0];
-
-  //     // للعرض كـ preview
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       this.previewUrl = reader.result;
-  //     };
-  //     reader.readAsDataURL(file);
-
-  //     // هنا تقدر تخزن الفايل في الفورم كنترول
-  //     this.userRegisterForm.patchValue({ ImageFile: file });
-  //   }
-  // }
 
   previewUrl: string | ArrayBuffer | null = null;
   onFileChange(event: Event): void {
@@ -182,6 +158,7 @@ export class StudentRegisterComponent implements OnInit {
   onSubmit() {
     this.isLoading = true;
     console.log(this.userRegisterForm.value);
+    console.log('valid?', this.userRegisterForm.valid);
 
     if (this.userRegisterForm.valid) {
       const formData = new FormData();
@@ -190,6 +167,7 @@ export class StudentRegisterComponent implements OnInit {
       formData.append('FirstName', formValue.FirstName);
       formData.append('LastName', formValue.LastName);
       if (formValue.Email) formData.append('Email', formValue.Email);
+      if (formValue.PhoneNumber) formData.append('PhoneNumber', formValue.PhoneNumber);
       formData.append('Password', formValue.Password);
       formData.append('Gender', formValue.Gender.toString());
       formData.append('Age', formValue.Age.toString());

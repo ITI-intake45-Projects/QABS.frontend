@@ -84,6 +84,25 @@
 
       </div>
 
+
+      <!-- Phone Number -->
+      <div class="relative z-0 w-full mb-5 group">
+        <label for="phone_number" class="block text-xl font-medium text-[var(--text-primary)] mb-1">
+          رقم الهاتف<span class="text-xl text-red-500"></span>
+        </label>
+
+        <input type="tel" name="phone_number" id="phone_number" formControlName="PhoneNumber" class="w-full text-xl px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
+           focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+           text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder="مثال: +201234567890" required />
+
+        <!-- Validation Errors -->
+        <div *ngIf="formControls['PhoneNumber'].touched && formControls['PhoneNumber'].invalid"
+          class="text-red-600 text-sm mt-1">
+          <span *ngIf="formControls['PhoneNumber'].errors?.['required']">رقم الهاتف مطلوب</span>
+          <span *ngIf="formControls['PhoneNumber'].errors?.['pattern']">أدخل رقم هاتف صالح</span>
+        </div>
+      </div>
+
       <!-- password
       <div class="relative z-0 w-full mb-5 group">
         <label for="floating_password" class="block text-xl font-medium text-[var(--text-primary)] mb-1">كلمة
@@ -147,7 +166,7 @@
       </div>
 
 
-   <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+      <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
         <!-- File Input -->
         <div class="mb-4">
           <label for="file_input" class="block mb-2 text-sm font-medium text-gray-700">

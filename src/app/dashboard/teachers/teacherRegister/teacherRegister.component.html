@@ -7,7 +7,8 @@
       <div *ngIf="showMessage" [ngClass]="{
            'bg-[var(--green-dark)]': messageType==='success',
            'bg-red-500': messageType==='error'
-         }" class="text-white text-2xl z-10 px-4 py-2 rounded-md absolute top-50 left-1/2 transform -translate-x-1/2 shadow-lg">
+         }"
+        class="text-white text-2xl z-10 px-4 py-2 rounded-md absolute top-50 left-1/2 transform -translate-x-1/2 shadow-lg">
         {{ message }}
       </div>
 
@@ -81,6 +82,26 @@
           <span *ngIf="formControls['Email'].errors?.['email']">أدخل بريدًا إلكترونيًا صالحًا</span>
         </div>
 
+      </div>
+
+
+
+      <!-- Phone Number -->
+      <div class="relative z-0 w-full mb-5 group">
+        <label for="phone_number" class="block text-xl font-medium text-[var(--text-primary)] mb-1">
+          رقم الهاتف<span class="text-xl text-red-500"></span>
+        </label>
+
+        <input type="tel" name="phone_number" id="phone_number" formControlName="PhoneNumber" class="w-full text-xl px-4 py-2 border border-[var(--gray-medium)] rounded-lg shadow-sm
+           focus:ring-2 focus:ring-[var(--gold-primary)] focus:border-[var(--gold-primary)]
+           text-[var(--text-primary)] placeholder-[var(--gray-dark)]" placeholder="مثال: +201234567890" required />
+
+        <!-- Validation Errors -->
+        <div *ngIf="formControls['PhoneNumber'].touched && formControls['PhoneNumber'].invalid"
+          class="text-red-600 text-sm mt-1">
+          <span *ngIf="formControls['PhoneNumber'].errors?.['required']">رقم الهاتف مطلوب</span>
+          <span *ngIf="formControls['PhoneNumber'].errors?.['pattern']">أدخل رقم هاتف صالح</span>
+        </div>
       </div>
 
       <!-- password -->

@@ -8,6 +8,7 @@ export interface UserRegister {
   Password : string;
   Gender : Gender;
   Age : number;
+  PhoneNumber : string;
   // ProfileImg? : string;
   // DateCreated? : Date;
   // ImageFile? : File;
