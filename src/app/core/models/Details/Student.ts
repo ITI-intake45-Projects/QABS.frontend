@@ -8,6 +8,7 @@ export interface Student {
   lastName: string;
   gender: Gender;
   age: number;
+  
   profileImg?: string;
   dateCreated?: string;
   lastLoginDate?: string;
